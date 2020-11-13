@@ -22,7 +22,7 @@ type GameClient = {
     id: string
 };
 
-const NOT_EQUAL = (client: any) => (_: any) => (_ !== client)
+const NOT_EQUAL = (client: any) => (_: any) => (_.id !== client.id)
 const HAS_GAME_ID = (gameId: GameId) => (_:GameClient)=> _.gameId === gameId;
 
 export class GameClientHandler implements GameClientNotifier {
@@ -31,6 +31,7 @@ export class GameClientHandler implements GameClientNotifier {
     constructor(server: Server, gameStore: GameStore) {
         this.clients = [];
         server.on('connection', (socket: WebSocket) => {
+            console.log("connection");
             let client: GameClient = {
                 socket,
                 id: uuidv4(),
@@ -39,6 +40,7 @@ export class GameClientHandler implements GameClientNotifier {
                 gameId: null
             }
             this.clients.push(client);
+            console.log(this.clients.length)
             const messageHandler = this.createClientMessageHandler(client, gameStore);
 
             socket.on('message', (msg) => {
@@ -50,13 +52,30 @@ export class GameClientHandler implements GameClientNotifier {
             });
 
             socket.on('close', () => {
+                console.log("close",  this.clients.length);
+                const gameId = client.gameId;
+                if(gameId){
+                    console.log("LeaveOnClose")
+                    const gameDriver = gameStore.getGameDriver(gameId);
+                    const msg = {
+
+                    }
+                    gameDriver?.sendUserMessage({
+                        type: 'LeaveGame',
+                        options: {
+                            gameId
+                        }
+                    }, client.id)
+                }
                 this.clients = this.clients.filter(NOT_EQUAL(client));
+                console.log("close filter",  this.clients.length);
             });
         });
     }
 
 
     notifyClients(gameId: GameId, history: GameHistory): void {
+
         this.clients
             .filter(HAS_GAME_ID(gameId))
             .forEach(client => {
@@ -70,17 +89,20 @@ export class GameClientHandler implements GameClientNotifier {
                     };
                     client.currentPatchIndex = history.patches.length;
                     client.currentSnapshotId = history.snapshotId;
-                    client.socket.send(message);
+                    client.socket.send(JSON.stringify(message));
                 } else {
+                    const patches = history.patches.slice(client.currentPatchIndex);
+                    if(patches.length === 0)
+                        return // No changes
                     const message: UpdateStateMessage = {
                         type: 'UpdateState',
                         options: {
-                            snapshot: null,
-                            patches: history.patches.slice(client.currentPatchIndex)
+                            patches,
+                            snapshot: null
                         }
                     };
                     client.currentPatchIndex = history.patches.length;
-                    client.socket.send(message);
+                    client.socket.send(JSON.stringify(message));
                 }
             })
     }
@@ -104,11 +126,13 @@ export class GameClientHandler implements GameClientNotifier {
         return {
             JoinGame(message: JoinGameMessage) {
                 const gameId = message?.options.gameId;
+                client.gameId = gameId;
                 dispatch(message, gameId);
             },
             LeaveGame(message: LeaveGameMessage) {
                 // TODO: check client.gameId here
                 const gameId = message?.options.gameId;
+                client.gameId = null;
                 dispatch(message, gameId);
             },
             ControlUpdate(message: ControlUpdateMessage) {

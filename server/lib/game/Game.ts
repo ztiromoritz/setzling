@@ -1,4 +1,4 @@
-import { GameState, GameId, ClientMessage, Player, Point, ControlUpdateMessage } from 'setzling-common';
+import { GameState, GameId, Player, Point, ControlUpdateMessage } from 'setzling-common';
 import produce, { applyPatches } from "immer"
 
 // version 6
@@ -43,8 +43,7 @@ export class Game {
         this.handleClientMessages(gameState);
         this.movement(gameState);
     }
-    
-    
+
 
     private handleClientMessages(gameState: GameState) {
 
@@ -52,11 +51,13 @@ export class Game {
 
         let userMessage: UserMessage | undefined;
         while ((userMessage = this.messageQueue.shift()) !== undefined) {
-            const clientId = userMessage?.message.clientId
+            console.log("userMessage",JSON.stringify(userMessage,null,2))
+            const clientId = userMessage?.clientId
             const player = gameState.players
                 .find((player: Player) => player.clientId === clientId);
             if (userMessage.message.type === 'JoinGame') {
                 if (!player) {
+                console.log("push")
                     gameState.players.push({
                         clientId,
                         position: getRandomPoint(),
@@ -66,14 +67,16 @@ export class Game {
                     })
                 }
             } else if (userMessage.message.type === 'LeaveGame') {
-                if (!player) {
+                console.log('LeaveGame')
+                if (player) {
                     gameState.players = gameState.players
                         .filter((player: Player) => player.clientId !== clientId)
                 }
-            } else if (userMessage.message.type === 'UserControl') {
+            } else if (userMessage.message.type === 'ControlUpdate') {
+               //  console.log('ControlUpdate', player)
                 const message = userMessage.message as ControlUpdateMessage;
                 if (player) {
-                    Object.assign(player.controls, userMessage.message.controls);
+                    player.controls = userMessage.message.options.controls;
                 }
 
             }
@@ -81,18 +84,28 @@ export class Game {
     }
 
     private movement(gameState: GameState) {
-        gameState.players.forEach((player)=>{
+        gameState.players.forEach((player) => {
+            let speed = 2;
             let dx = 0;
             let dy = 0;
-            if(player.controls.arrows.up){
-                dy = -1;
+            const { up, down, left, right } = player.controls.arrows
+            if (up) {
+                dy = -speed;
             }
+            if (down) {
+                dy = speed;
+            }
+            if (left) {
+                dx = -speed
+            }
+            if (right) {
+                dx = speed
+            }
+            player.position.x += dx;
+            player.position.y += dy;
         })
     }
 
-    public pushClientMessage(message: ClientMessage) {
-
-    }
 
     public sendUserMessage(message: any, clientId: string) {
         this.messageQueue.push({ message, clientId })

@@ -14,16 +14,16 @@ export interface GameHistory {
     patches: Patch[]
 }
 
-const FRAMES_PER_SECOND = 30;
+const FRAMES_PER_SECOND = 60;
 const FRAMES_PER_SNAPSHOT = 120;
 
 export class GameDriver {
     private game: Game;
     private state: GameState;
     private intervalId!: NodeJS.Timeout | null;
-    private clientNotifier: GameClientNotifier;
+    private clientNotifier: GameClientNotifier | undefined;
 
-    constructor(game: Game, clientNotifier: GameClientNotifier){
+    constructor(game: Game, clientNotifier: GameClientNotifier | undefined){
         this.game = game;
         this.state = this.initializeState();
         this.clientNotifier = clientNotifier;
@@ -31,7 +31,8 @@ export class GameDriver {
 
     private initializeState(): GameState {
         return {
-            id: this.game.id
+            id: this.game.id,
+            players: []
         }
     }
 
@@ -46,6 +47,7 @@ export class GameDriver {
             const oldState: GameState = this.state;
             const [newState, patches, inversePatches] = produceWithPatches(oldState,draft=>this.game.update(draft));
             // update history
+            //console.log("newState", JSON.stringify(newState,null,2));
             if(frame>FRAMES_PER_SNAPSHOT || !history.snapshot){
                 history.snapshotId = (history.snapshotId === 'A')?'B':'A';
                 history.snapshot = oldState;
@@ -54,7 +56,8 @@ export class GameDriver {
             }else{
                 history.patches.push(...patches);
             }
-            this.clientNotifier.notifyClients(this.game.id, history);
+            this.clientNotifier?.notifyClients(this.game.id, history);
+            this.state = newState;
             frame++;
         }, 1000 / FRAMES_PER_SECOND)
     }

@@ -6,12 +6,139 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Setzling</title>
+    <!--<script src="https://unpkg.com/immer"></script> -->
+    <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
 </head>
-<body>
+<body style="position: relative;">
+<style>
+ #game {
+     width: 800px;
+     height: 800px;
+     background-color: #eeeeee;
+ }
+ .player {
+     display: block;
+     width: 10px;
+     height: 10px;
+     border-radius: 5px;
+     background-color: red;
+     position: absolute;
+ }
+</style>
 
-<script type="module">
+<pre style="position: absolute; opacity: 0.4;">
+</pre>
+<div id="game">
+
+</div>
+<script>
+    immer.enablePatches();
+
+    let state = {};
+
+    const COLORS = ['red','blue','green','lime'];
+
+    const $game = document.querySelector('#game');
+    function render(state){
+        $game.innerHTML = "";
+        let color = 0;
+        state.players.forEach((player)=>{
+            const $player = document.createElement('div');
+            $player.classList.add('player');
+            $player.style.cssText = `top: ${player.position.y}px; left: ${player.position.x}px; background-color: ${COLORS[color++]}`;
+            console.log(`top: ${player.position.y}px; left: ${player.position.x}px;`)
+            $game.appendChild($player);
+
+        })
+    }
+
+    const ws = new WebSocket("ws://localhost:7778/");
+    ws.onopen = function (event) {
+        console.log("open");
+        const msg = {
+            type: 'JoinGame',
+            options: {
+                gameId: 'default'
+            }
+        }
+        ws.send(JSON.stringify(msg));
+
+        /*document.addEventListener('beforeunload', ()=>{
+            console.log('unload');
+            const msg = {
+                type: 'LeaveGame',
+                options: {
+                    gameId: 'default'
+                }
+            }
+            ws.send(JSON.stringify(msg));
+        })*/
+    };
+
+
+    ws.onmessage = function (event) {
+        const message = JSON.parse(event.data);
+        if (message.type === 'UpdateState') {
+            console.log('UpdateState', message.options);
+            if (message.options.snapshot) {
+                state = message.options.snapshot
+            }
+            if (message.options.patches) {
+                state = immer.applyPatches(state, message.options.patches);
+            }
+            console.log("Update state!");
+        }
+        document.querySelector('pre').innerHTML = JSON.stringify(state, null, 2);
+
+        render(state);
+    }
+
+
+    let arrows = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    };
+
+    function sendControlUpdate() {
+        const msg = {
+            type: 'ControlUpdate',
+            options: {
+                controls: {arrows}
+            }
+        }
+        ws.send(JSON.stringify(msg));
+    }
+
+    document.addEventListener('keyup', (e) => {
+        if (e.code === "ArrowUp") {
+            arrows.up = false;
+        } else if (e.code === "ArrowDown") {
+            arrows.down = false;
+        } else if (e.code === "ArrowLeft") {
+            arrows.left = false;
+        } else if (e.code === "ArrowRight") {
+            arrows.right = false;
+        }
+        sendControlUpdate();
+    })
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "ArrowUp") {
+            arrows.up = true;
+        } else if (e.code === "ArrowDown") {
+            arrows.down = true;
+        } else if (e.code === "ArrowLeft") {
+            arrows.left = true;
+        } else if (e.code === "ArrowRight") {
+            arrows.right = true;
+        }
+        sendControlUpdate();
+    })
 
 </script>
+
 
 </body>
 </html>

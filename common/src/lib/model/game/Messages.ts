@@ -49,7 +49,7 @@ export type UpdateStateMessage = {
   type: 'UpdateState'
   options: {
     snapshot: GameState | null,
-    patches: Patch
+    patches: Patch[]
   }
 }
 

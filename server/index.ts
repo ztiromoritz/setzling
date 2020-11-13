@@ -20,6 +20,8 @@ console.log(`[ws]: Websocket Server is running at ws://localhost:${wsPort}`)
 
 const gameStore = new GameStore();
 const clientHandler = new GameClientHandler(wsServer, gameStore)
+gameStore.setClientNotifier(clientHandler);
+gameStore.init();
 
 const app = express();
 app.get('/', (req, res) => res.send('Setzling!'));
