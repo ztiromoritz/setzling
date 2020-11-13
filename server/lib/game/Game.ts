@@ -84,8 +84,8 @@ export class Game {
     }
 
     private movement(gameState: GameState) {
+        let speed = 2;
         gameState.players.forEach((player) => {
-            let speed = 2;
             let dx = 0;
             let dy = 0;
             const { up, down, left, right } = player.controls.arrows

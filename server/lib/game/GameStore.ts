@@ -9,15 +9,13 @@ export class GameStore {
     private clientNotifier?: GameClientNotifier;
 
     constructor(){
-        this.games = new Map();
-
-
+        this.games = new Map<GameId, GameDriver>();
     }
 
     init(){
         const gameId = 'default';
         const defaultGame = new Game(gameId);
-        const gameDriver = new GameDriver(defaultGame, this.clientNotifier );
+        const gameDriver = new GameDriver(defaultGame, this.clientNotifier);
         this.games.set(gameId, gameDriver);
         gameDriver.start();
     }
