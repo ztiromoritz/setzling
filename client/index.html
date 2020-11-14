@@ -7,135 +7,69 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Setzling</title>
     <!--<script src="https://unpkg.com/immer"></script> -->
-    <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
+   <!-- --> <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
 </head>
 <body style="position: relative;">
 <style>
- #game {
-     width: 800px;
-     height: 800px;
-     background-color: #eeeeee;
- }
- .player {
-     display: block;
-     width: 10px;
-     height: 10px;
-     border-radius: 5px;
-     background-color: red;
-     position: absolute;
- }
-</style>
+    body {
+        margin:0;
+        padding: 0;
+        background: #111111;
+        image-rendering: optimizeSpeed;              /* Older versions of FF */
+        image-rendering: -moz-crisp-edges;           /* FF 6.0+ */
+        image-rendering: -webkit-optimize-contrast;  /* Webkit (non standard naming) */
+        image-rendering: -o-crisp-edges;             /* OS X & Windows Opera (12.02+) */
+        image-rendering: pixelated;                /* Possible future browsers. */
+        -ms-interpolation-mode: nearest-neighbor;    /* IE (non standard naming) */
+        image-rendering: crisp-edges;                  /* Chrome 41 */
+        height: 100vh;
+        width: 100vw;
+        margin: auto;
+        width: 100%;
+        text-align:center;
+    }
 
+    canvas {
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-crisp-edges;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        z-index: -10;
+        // position: absolute;
+
+    }
+
+    #game {
+        width: 800px;
+        height: 800px;
+        z-index: 10;
+        //background-color: #bbbbbb;
+    }
+    pre {
+        color: white;
+    }
+
+    .player {
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        background-color: red;
+        position: absolute;
+    }
+</style>
+<!--
 <pre style="position: absolute; opacity: 0.4;">
 </pre>
 <div id="game">
 
 </div>
+-->
 <script>
-    immer.enablePatches();
+window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
+</script>
 
-    let state = {};
-
-    const COLORS = ['red','blue','green','lime'];
-
-    const $game = document.querySelector('#game');
-    function render(state){
-        $game.innerHTML = "";
-        let color = 0;
-        state.players.forEach((player)=>{
-            const $player = document.createElement('div');
-            $player.classList.add('player');
-            $player.style.cssText = `top: ${player.position.y}px; left: ${player.position.x}px; background-color: ${COLORS[color++]}`;
-            console.log(`top: ${player.position.y}px; left: ${player.position.x}px;`)
-            $game.appendChild($player);
-        })
-    }
-
-    const ws = new WebSocket("##wsBaseUrl##");
-    ws.onopen = function (event) {
-        console.log("open");
-        const msg = {
-            type: 'JoinGame',
-            options: {
-                gameId: 'default'
-            }
-        }
-        ws.send(JSON.stringify(msg));
-
-        /*document.addEventListener('beforeunload', ()=>{
-            console.log('unload');
-            const msg = {
-                type: 'LeaveGame',
-                options: {
-                    gameId: 'default'
-                }
-            }
-            ws.send(JSON.stringify(msg));
-        })*/
-    };
-
-
-    ws.onmessage = function (event) {
-        const message = JSON.parse(event.data);
-        if (message.type === 'UpdateState') {
-            console.log('UpdateState', message.options);
-            if (message.options.snapshot) {
-                state = message.options.snapshot
-            }
-            if (message.options.patches) {
-                state = immer.applyPatches(state, message.options.patches);
-            }
-            console.log("Update state!");
-        }
-        document.querySelector('pre').innerHTML = JSON.stringify(state, null, 2);
-
-        render(state);
-    }
-
-
-    let arrows = {
-        up: false,
-        down: false,
-        left: false,
-        right: false
-    };
-
-    function sendControlUpdate() {
-        const msg = {
-            type: 'ControlUpdate',
-            options: {
-                controls: {arrows}
-            }
-        }
-        ws.send(JSON.stringify(msg));
-    }
-
-    document.addEventListener('keyup', (e) => {
-        if (e.code === "ArrowUp") {
-            arrows.up = false;
-        } else if (e.code === "ArrowDown") {
-            arrows.down = false;
-        } else if (e.code === "ArrowLeft") {
-            arrows.left = false;
-        } else if (e.code === "ArrowRight") {
-            arrows.right = false;
-        }
-        sendControlUpdate();
-    })
-
-    document.addEventListener('keydown', (e) => {
-        if (e.code === "ArrowUp") {
-            arrows.up = true;
-        } else if (e.code === "ArrowDown") {
-            arrows.down = true;
-        } else if (e.code === "ArrowLeft") {
-            arrows.left = true;
-        } else if (e.code === "ArrowRight") {
-            arrows.right = true;
-        }
-        sendControlUpdate();
-    })
-
+<script type="module" src="./build/bundle/index.js">
 </script>
 
 
