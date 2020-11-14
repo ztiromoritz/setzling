@@ -50,12 +50,9 @@ export const draft = () => {
 
             enablePatches();
 
-            const COLORS = ['red', 'blue', 'green', 'lime'];
-
             const $game = document.querySelector('#game');
 
             function render(state: GameState) {
-
 
                 app.stage.children.sort(function(a,b) {
                     if (a.position.y > b.position.y) return 1;
