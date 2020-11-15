@@ -5,13 +5,40 @@ import {Sprite} from "pixi.js";
 
 
 export const draft = () => {
-
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     const app = new PIXI.Application({forceCanvas: true, width: 1200, height: 800});
    // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
     document.body.prepend(app.view);
-    console.log("NEW")
+
+
+    // initialize range slider
+    let rangeSlider = document.querySelector("#communication_range_slider");
+    let communicationRange = 50;
+    const onUpdateRangeSlider = (rangeSlider: any, rangeLabel: any) => {
+        let newValue;
+        if (rangeSlider != null) {
+            newValue = rangeSlider.value;
+        }
+        console.log("New value: "+newValue);
+        if (rangeLabel != null) {
+            rangeLabel.innerHTML = "Range: " + newValue;
+        }
+        communicationRange = newValue;
+    }
+    if (rangeSlider != null) {
+        let rangeLabel = document.querySelector("#communication_range_label");
+        rangeSlider.addEventListener("input", () => {
+            onUpdateRangeSlider(rangeSlider, rangeLabel)
+        });
+        rangeSlider.addEventListener("change", () => {
+            onUpdateRangeSlider(rangeSlider, rangeLabel)
+        }); // add onInput and onChange, as Firefox & Chrome trigger on input, while IE10 on change
+        console.log("... initialized slider!");
+    } else {
+        console.error("Range slider cannot be found!");
+    }
+
 
     app.loader
         .add('tree', './assets/tree.png')
@@ -35,7 +62,7 @@ export const draft = () => {
             app.stage.addChild(tree);
 
             const seedlings: Sprite[] = [];
-            for(let i = 0; i<20;i++){
+            for (let i = 0; i < 20; i++) {
                 const seedling = new PIXI.Sprite(resources?.setzling?.texture);
                 seedling.x = 0;
                 seedling.y = 0;
@@ -52,32 +79,43 @@ export const draft = () => {
 
             const $game = document.querySelector('#game');
 
-            function render(state: GameState) {
+            // prepare stage for drawing communication range later
+            let communicationRangeLayer = new PIXI.Graphics();
+            app.stage.addChild(communicationRangeLayer);
 
-                app.stage.children.sort(function(a,b) {
+            function render(state: GameState) {
+                app.stage.children.sort(function (a, b) {
                     if (a.position.y > b.position.y) return 1;
                     if (a.position.y < b.position.y) return -1;
                     return 0;
                 });
-                app.stage.children.forEach((child)=>{
+                app.stage.children.forEach((child) => {
                     child.zIndex = child.y;
                 })
 
 
-                seedlings.forEach(s=>s.visible = false);
+                seedlings.forEach(s => s.visible = false);
 
                 let color = 0;
+                app.stage.removeChild(communicationRangeLayer);
+                communicationRangeLayer = new PIXI.Graphics();
                 state.players.forEach((player: any) => {
                     const seedling = seedlings[color++];
                     seedling.x = player.position.x;
                     seedling.y = player.position.y;
                     seedling.visible = true;
+                    drawCommunicationRange(player);
                 })
+                app.stage.addChild(communicationRangeLayer);
 
                 if ($game) {
                     $game.innerHTML = "";
-
                 }
+            }
+
+            function drawCommunicationRange(player: any) {
+                communicationRangeLayer.lineStyle(1, 0xff0000, 0.5)
+                communicationRangeLayer.drawCircle(player.position.x, player.position.y, communicationRange);
             }
 
             const ws = new WebSocket((window as any).WEB_SOCKET_BASE_URL);
@@ -159,8 +197,5 @@ export const draft = () => {
                 sendControlUpdate();
             })
 
-        })
-
-
-
+        });
 }
