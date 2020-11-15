@@ -50,7 +50,7 @@ app.use('/client/',stringReplace({
 app.use('/client',express.static('../client/'))
 
 app.listen(serverPort, () => {
-  console.log(`[server]: Server is running at https://localhost:${serverPort}`);
+  console.log(`[server]: Server is running at http://localhost:${serverPort}/client`);
 });
 
 
