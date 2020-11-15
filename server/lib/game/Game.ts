@@ -1,4 +1,4 @@
-import { GameState, GameId, Player, Point, ControlUpdateMessage } from 'setzling-common';
+import {GameState, GameId, Player, Point, ControlUpdateMessage, CommunicationRangeUpdateMessage} from 'setzling-common';
 import produce, { applyPatches } from "immer"
 
 // version 6
@@ -55,30 +55,43 @@ export class Game {
             const clientId = userMessage?.clientId
             const player = gameState.players
                 .find((player: Player) => player.clientId === clientId);
-            if (userMessage.message.type === 'JoinGame') {
-                if (!player) {
-                console.log("push")
-                    gameState.players.push({
-                        clientId,
-                        position: getRandomPoint(),
-                        controls: {
-                            arrows: { up: false, down: false, left: false, right: false }
-                        }
-                    })
-                }
-            } else if (userMessage.message.type === 'LeaveGame') {
-                console.log('LeaveGame')
-                if (player) {
-                    gameState.players = gameState.players
-                        .filter((player: Player) => player.clientId !== clientId)
-                }
-            } else if (userMessage.message.type === 'ControlUpdate') {
-               //  console.log('ControlUpdate', player)
-                const message = userMessage.message as ControlUpdateMessage;
-                if (player) {
-                    player.controls = userMessage.message.options.controls;
-                }
-
+            switch (userMessage.message.type) {
+                case 'JoinGame':
+                    if (!player) {
+                    console.log("push")
+                        gameState.players.push({
+                            clientId,
+                            position: getRandomPoint(),
+                            controls: {
+                                arrows: { up: false, down: false, left: false, right: false }
+                            },
+                            communicationRange: 50
+                        })
+                    }
+                    break;
+                case 'LeaveGame':
+                    console.log('LeaveGame')
+                    if (player) {
+                        gameState.players = gameState.players
+                            .filter((player: Player) => player.clientId !== clientId)
+                    }
+                    break;
+                case 'ControlUpdate':
+                   //  console.log('ControlUpdate', player)
+                    const message = userMessage.message as ControlUpdateMessage;
+                    if (player) {
+                        player.controls = userMessage.message.options.controls;
+                    }
+                    break;
+                case 'CommunicationRangeUpdate':
+                    if (player) {
+                        const message = userMessage.message as CommunicationRangeUpdateMessage;
+                        player.communicationRange = message.options.range;
+                    }
+                    break;
+                default:
+                    console.error("Unexpected message type: "+userMessage.message.type)
+                    break;
             }
         }
     }

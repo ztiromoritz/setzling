@@ -18,7 +18,8 @@ export interface Player {
   clientId: string,
   name?: string,
   position: Point,
-  controls: Controls
+  controls: Controls,
+  communicationRange: number
 }
 
 export interface GameState {

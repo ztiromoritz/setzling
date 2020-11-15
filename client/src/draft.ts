@@ -1,5 +1,5 @@
 import {enablePatches, applyPatches} from "immer";
-import {GameState} from "setzling-common";
+import {GameState, Player} from "setzling-common";
 import * as PIXI from 'pixi.js';
 import {Sprite} from "pixi.js";
 
@@ -10,34 +10,6 @@ export const draft = () => {
     const app = new PIXI.Application({forceCanvas: true, width: 1200, height: 800});
    // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
     document.body.prepend(app.view);
-
-
-    // initialize range slider
-    let rangeSlider = document.querySelector("#communication_range_slider");
-    let communicationRange = 50;
-    const onUpdateRangeSlider = (rangeSlider: any, rangeLabel: any) => {
-        let newValue;
-        if (rangeSlider != null) {
-            newValue = rangeSlider.value;
-        }
-        console.log("New value: "+newValue);
-        if (rangeLabel != null) {
-            rangeLabel.innerHTML = "Range: " + newValue;
-        }
-        communicationRange = newValue;
-    }
-    if (rangeSlider != null) {
-        let rangeLabel = document.querySelector("#communication_range_label");
-        rangeSlider.addEventListener("input", () => {
-            onUpdateRangeSlider(rangeSlider, rangeLabel)
-        });
-        rangeSlider.addEventListener("change", () => {
-            onUpdateRangeSlider(rangeSlider, rangeLabel)
-        }); // add onInput and onChange, as Firefox & Chrome trigger on input, while IE10 on change
-        console.log("... initialized slider!");
-    } else {
-        console.error("Range slider cannot be found!");
-    }
 
 
     app.loader
@@ -113,9 +85,9 @@ export const draft = () => {
                 }
             }
 
-            function drawCommunicationRange(player: any) {
+            function drawCommunicationRange(player: Player) {
                 communicationRangeLayer.lineStyle(1, 0xff0000, 0.5)
-                communicationRangeLayer.drawCircle(player.position.x, player.position.y, communicationRange);
+                communicationRangeLayer.drawCircle(player.position.x, player.position.y, player.communicationRange);
             }
 
             const ws = new WebSocket((window as any).WEB_SOCKET_BASE_URL);
@@ -170,6 +142,45 @@ export const draft = () => {
                 }
                 ws.send(JSON.stringify(msg));
             }
+
+            function sendCommunicationRangeUpdate(range: number) {
+                const msg = {
+                    type: 'CommunicationRangeUpdate',
+                    options: {
+                        range: range
+                    }
+                }
+                ws.send(JSON.stringify(msg));
+            }
+
+
+            // handle range slider
+            let rangeSlider = document.querySelector("#communication_range_slider");
+            let communicationRange = 50;
+            const onUpdateRangeSlider = (rangeSlider: any, rangeLabel: any) => {
+                let newValue;
+                if (rangeSlider != null) {
+                    newValue = rangeSlider.value;
+                }
+                if (rangeLabel != null) {
+                    rangeLabel.innerHTML = "Range: " + newValue;
+                }
+                communicationRange = newValue;
+                sendCommunicationRangeUpdate(newValue)
+            };
+            if (rangeSlider != null) {
+                let rangeLabel = document.querySelector("#communication_range_label");
+                rangeSlider.addEventListener("input", () => {
+                    onUpdateRangeSlider(rangeSlider, rangeLabel)
+                });
+                rangeSlider.addEventListener("change", () => {
+                    onUpdateRangeSlider(rangeSlider, rangeLabel)
+                }); // add onInput and onChange, as Firefox & Chrome trigger on input, while IE10 on change
+                console.log("... initialized slider!");
+            } else {
+                console.error("Range slider cannot be found!");
+            }
+
 
             document.addEventListener('keyup', (e) => {
                 if (e.code === "ArrowUp") {

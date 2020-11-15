@@ -29,10 +29,18 @@ export type ControlUpdateMessage = {
   }
 }
 
+export type CommunicationRangeUpdateMessage = {
+  type: 'CommunicationRangeUpdate',
+  options: {
+    range : number
+  }
+}
+
 export type ClientMessageHandler = {
   JoinGame?: (msg: JoinGameMessage) => void,
   LeaveGame?: (msg: LeaveGameMessage) => void,
   ControlUpdate?: (msg: ControlUpdateMessage) => void
+  CommunicationRangeUpdate?: (msg: CommunicationRangeUpdateMessage) => void
 }
 
 
