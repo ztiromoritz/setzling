@@ -74,7 +74,7 @@ export const draft = () => {
                 state.players.forEach((player: any) => {
                     const seedling = seedlings[color++];
                     seedling.x = player.position.x;
-                    seedling.y = player.position.y;
+                    seedling.y = player.position.y + /*to center around middle:*/ (seedling.height/2);
                     seedling.visible = true;
                     drawCommunicationRange(player);
                 })
@@ -167,6 +167,7 @@ export const draft = () => {
                 }
                 communicationRange = newValue;
                 sendCommunicationRangeUpdate(newValue)
+                rangeSlider.blur(); // lose focus after changing value
             };
             if (rangeSlider != null) {
                 let rangeLabel = document.querySelector("#communication_range_label");
