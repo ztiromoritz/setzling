@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "immer": "^7.0.14",
+    "lindenmayer": "^1.5.4",
     "pixi.js": "^5.3.3",
     "pixi.js-legacy": "^5.3.3",
     "setzling-common": "file:../common/"

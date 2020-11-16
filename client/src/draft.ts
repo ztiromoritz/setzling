@@ -7,7 +7,7 @@ import {Sprite} from "pixi.js";
 export const draft = () => {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-    const app = new PIXI.Application({forceCanvas: true, width: 1200, height: 800});
+    const app = new PIXI.Application({width: 1200, height: 800});
    // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
     document.body.prepend(app.view);
 

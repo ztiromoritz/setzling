@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Plant experiment</title>
+</head>
+<body>
+<script src="node_modules/pixi.js/dist/pixi.js"></script>
+<script src="node_modules/lindenmayer/dist/lindenmayer.browser.js"></script>
+<script>
+
+
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    function createFrames(texture, {frameWidth, frameHeight}) {
+        const cols = Math.floor(texture.width / frameWidth);
+        const rows = Math.floor(texture.height / frameHeight);
+        console.log(cols, rows);
+        const result = [];
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                result.push(new PIXI.Texture(texture,
+                    new PIXI.Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight)));
+            }
+        }
+        return result;
+    }
+
+
+    function rotate({x, y}, angle, pivot) {
+        pivot = pivot || {x: 0, y: 0};
+        const _x = pivot.x
+            + ((x - pivot.x) * Math.cos(angle))
+            - ((y - pivot.y) * Math.sin(angle));
+        const _y = pivot.y
+            + ((x - pivot.x) * Math.sin(angle))
+            + ((y - pivot.y) * Math.cos(angle));
+        return {x: _x, y: _y};
+    }
+
+
+    const app = new PIXI.Application({width: 1200, height: 800});
+    document.body.prepend(app.view);
+    app.loader
+        .add('spritesheet', './assets/FlowerParts.png')
+        .load((loader, resources) => {
+            const textures = createFrames(resources.spritesheet.texture, {frameWidth: 16, frameHeight: 16})
+            const spr = new PIXI.AnimatedSprite(textures);
+            spr.frame = 1;
+            spr.x = 100;
+            spr.y = 100;
+            app.stage.addChild(spr);
+            console.log("loaded");
+
+
+            let point = {x: 400, y: 400}
+            let direction = {x: 0, y: -1};
+            const stack = [];
+            const plantGen = new LSystem({
+                axiom: 'F++F++F',
+                productions: {'F': 'F[-F]F[+F][F][-F][+F-F]'}, // F ->
+                finals: {
+                    '+': () => {
+                        direction = rotate(direction, Math.PI * 0.2)
+                    },
+                    '-': () => {
+                        direction = rotate(direction, -Math.PI * 0.4)
+                    },
+                    '[': () => {
+                        stack.push({p: {...point}, d: {...direction}})
+                    },
+                    ']': () => {
+                        console.log(direction);
+                        // Draw leaf of graph
+                        const spr = new PIXI.Sprite(textures[3]);
+                        //spr.currentFrame = 1//plantGen.iterations;
+                        spr.x = point.x;
+                        spr.y = point.y;
+                        spr.scale.set(2, 2);
+                        app.stage.addChild(spr);
+
+                        // pop back
+                        const {p, d} = stack.pop();
+                        point = p;
+                        direction = d;
+
+                    },
+                    'F': () => {
+                        const {x, y} = point;
+                        point = {x: x + direction.x * (7 / plantGen.iterations), y: y + direction.y * 7};
+                        const spr = new PIXI.Sprite(textures[plantGen.iterations+2]);
+                        //spr.currentFrame = 1//plantGen.iterations;
+                        spr.x = point.x;
+                        spr.y = point.y;
+                        spr.scale.set(2, 2);
+                        app.stage.addChild(spr);
+                    }
+                }
+            });
+            plantGen.iterate(2);
+            plantGen.final();
+            
+
+
+        });
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
