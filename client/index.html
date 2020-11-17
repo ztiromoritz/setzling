@@ -57,6 +57,29 @@
         background-color: red;
         position: absolute;
     }
+
+    #grid-header { grid-area: header; }
+    #grid-menu { grid-area: menu; }
+    #grid-main { grid-area: main; }
+    #grid-right { grid-area: right; }
+    #grid-footer { grid-area: footer; }
+    .grid-container {
+        display: grid;
+        grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+        grid-gap: 10px;
+        // background-color: #2196F3;
+        padding: 10px;
+    }
+
+    .grid-container > div {
+        // background-color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        padding: 20px 0;
+        font-size: 30px;
+    }
 </style>
 <!--
 <pre style="position: absolute; opacity: 0.4;">
@@ -70,10 +93,28 @@ window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
 </script>
 
 <script type="module" src="./build/bundle/index.js"></script>
-<div>
-    <input type="range" min="30" max="300" value="50" id="communication_range_slider">
-    <label for="communication_range_slider" id="communication_range_label">Range: 100</label>
+<div class="grid-container">
+    <!--div id="grid-header"></div-->
+    <div id="grid-menu"></div>
+    <div id="grid-main"></div>
+    <div id="grid-right">
+        <div id="meet" class="sidebar-element"></div>
+
+        <input type="range" min="30" max="300" value="50" id="communication_range_slider">
+        <label for="communication_range_slider" id="communication_range_label">Range: 100</label>
+    </div>
+    <!--div id="grid-footer"></div-->
 </div>
 
+<script src='https://meet.jit.si/external_api.js'></script>
+<script>
+    const domain = 'meet.jit.si';
+    const options = {
+        roomName: 'JitsiMeetAPIExample',
+        width: 400,
+        height: 400,
+        parentNode: document.querySelector('#meet')
+    };
+    const api = new JitsiMeetExternalAPI(domain, options);</script>
 </body>
 </html>

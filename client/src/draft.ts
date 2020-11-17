@@ -9,7 +9,11 @@ export const draft = () => {
 
     const app = new PIXI.Application({width: 1200, height: 800});
    // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
-    document.body.prepend(app.view);
+    let mainSection = document.querySelector('#grid-main')
+    if (mainSection != null)
+        mainSection.prepend(app.view);
+    else
+        document.body.prepend(app.view);
 
 
     app.loader
@@ -208,6 +212,5 @@ export const draft = () => {
                 }
                 sendControlUpdate();
             })
-
         });
 }
