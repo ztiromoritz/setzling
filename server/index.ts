@@ -55,6 +55,7 @@ app.use('/client/',stringReplace({
   '##wsBaseUrl##': wsBaseUrl,
   '##gitHash##': gitHash
 }));
+
 app.use('/client',express.static('../client/'))
 
 app.listen(serverPort, () => {
