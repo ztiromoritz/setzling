@@ -7,11 +7,18 @@ import { GameClientHandler } from "./lib/game/GameClientHandler";
 import { GameStore } from "./lib/game/GameStore";
 import { InstanceService } from "./lib/service/InstanceService";
 import { stringReplace } from "string-replace-middleware";
+import { execSync } from "child_process";
+
+const gitHash = execSync('git rev-parse HEAD').toString().trim();
+
+
 dotenv.config()
 const {SERVER_PORT, WS_PORT, WS_BASE_URL} = process.env;
 const serverPort = Number.parseInt(SERVER_PORT || "7777");
 const wsPort = Number.parseInt(WS_PORT || "7778");
 const wsBaseUrl = WS_BASE_URL || `ws://localhost:${wsPort}`
+
+
 
 
 //
@@ -46,6 +53,7 @@ app.use('/api/instances/', new InstanceController(instanceService).getRouter())
 // Static files
 app.use('/client/',stringReplace({
   '##wsBaseUrl##': wsBaseUrl,
+  '##gitHash##': gitHash
 }));
 app.use('/client',express.static('../client/'))
 
