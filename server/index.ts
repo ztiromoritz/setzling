@@ -56,6 +56,7 @@ app.use('/client/',stringReplace({
   '##gitHash##': gitHash
 }));
 
+
 app.use('/client',express.static('../client/'))
 
 app.listen(serverPort, () => {
