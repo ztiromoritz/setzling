@@ -93,6 +93,7 @@ window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
 console.log("githash ", "##gitHash##");
 </script>
 
+<script src='https://meet.jit.si/external_api.js'></script>
 <script type="module" src="./build/bundle/index.js"></script>
 <div class="grid-container">
     <!--div id="grid-header"></div-->
@@ -106,16 +107,5 @@ console.log("githash ", "##gitHash##");
     </div>
     <!--div id="grid-footer"></div-->
 </div>
-
-<script src='https://meet.jit.si/external_api.js'></script>
-<script>
-    const domain = 'meet.jit.si';
-    const options = {
-        roomName: 'JitsiMeetAPIExample',
-        width: 400,
-        height: 400,
-        parentNode: document.querySelector('#meet')
-    };
-    const api = new JitsiMeetExternalAPI(domain, options);</script>
 </body>
 </html>

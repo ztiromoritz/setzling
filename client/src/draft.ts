@@ -8,7 +8,7 @@ export const draft = () => {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     const app = new PIXI.Application({width: 1200, height: 800});
-   // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
+    // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
     let mainSection = document.querySelector('#grid-main')
     if (mainSection != null)
         mainSection.prepend(app.view);
@@ -213,4 +213,15 @@ export const draft = () => {
                 sendControlUpdate();
             })
         });
+
+    function appendJitsiIntegration(roomId: string) {
+        const domain = 'meet.jit.si';
+        const options = {
+            roomName: roomId,
+            width: 400,
+            height: 400,
+            parentNode: document.querySelector('#meet')
+        };
+        const api = new (window as any).JitsiMeetExternalAPI(domain, options);
+    }
 }
