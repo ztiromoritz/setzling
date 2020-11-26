@@ -41,7 +41,7 @@ export class Assets {
             urls: {
                 "A3": "Guitar-A-Minor.wav",
                 "D4": "Guitar-D-Minor.wav",
-                "E4": "Guitar-E-minor.wav"
+                "E4": "Guitar-E-Minor.wav"
             },
             release: 1,
             baseUrl: "./assets/",
