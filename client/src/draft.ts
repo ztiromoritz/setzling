@@ -3,8 +3,11 @@ import {GameState, Player} from "setzling-common";
 import * as PIXI from 'pixi.js';
 import {Sprite} from "pixi.js";
 
+import {Assets} from "./assets";
+
 
 export const draft = () => {
+
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     const app = new PIXI.Application({width: 1200, height: 800});
@@ -16,12 +19,41 @@ export const draft = () => {
         document.body.prepend(app.view);
 
 
-    app.loader
-        .add('tree', './assets/tree.png')
-        .add('setzling', './assets/setzling.png')
-        .load((loader, resources) => {
-            console.log("NEWWW")
-            const tree = new PIXI.Sprite(resources?.tree?.texture);
+    Assets
+        .loadAll(app)
+        .then(({pixiResources, toneResources}) => {
+
+            
+            document.addEventListener("keydown", (event: KeyboardEvent) => {
+                console.log("asdf", event);
+                if (event.key=== 'q') {
+                    toneResources.samplers?.guitarMajor.triggerAttackRelease(["C4"], 4);
+                    return;
+                }
+                if (event.key=== 'w') {
+                    toneResources.samplers?.guitarMinor.triggerAttackRelease(["D4"], 4);
+                    return;
+                }
+                if (event.key=== 'e') {
+                    toneResources.samplers?.guitarMinor.triggerAttackRelease(["E4"], 4);
+                    return;
+                }
+                if (event.key=== 'r') {
+                    toneResources.samplers?.guitarMajor.triggerAttackRelease(["F4"], 4);
+                    return;
+                }
+                if (event.key=== 't') {
+                    toneResources.samplers?.guitarMajor.triggerAttackRelease(["G4"], 4);
+                    return;
+                }
+                if (event.key=== 'z') {
+                    toneResources.samplers?.guitarMinor.triggerAttackRelease(["A4"], 4);
+                    return;
+                }
+            });
+
+
+            const tree = new PIXI.Sprite(pixiResources?.tree?.texture);
             console.log(tree);
 
             // Setup the position of the bunny
@@ -39,7 +71,7 @@ export const draft = () => {
 
             const seedlings: Sprite[] = [];
             for (let i = 0; i < 20; i++) {
-                const seedling = new PIXI.Sprite(resources?.setzling?.texture);
+                const seedling = new PIXI.Sprite(pixiResources?.setzling?.texture);
                 seedling.x = 0;
                 seedling.y = 0;
                 seedling.visible = false;

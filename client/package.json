@@ -18,6 +18,7 @@
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-replace": "^2.3.4",
+    "@types/pixi.js": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "rollup": "^2.33.2",
     "typescript": "^4.0.5"
@@ -28,6 +29,7 @@
     "lindenmayer": "^1.5.4",
     "pixi.js": "^5.3.3",
     "pixi.js-legacy": "^5.3.3",
-    "setzling-common": "file:../common/"
+    "setzling-common": "file:../common/",
+    "tone": "^14.7.58"
   }
 }
