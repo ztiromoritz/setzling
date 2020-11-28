@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
     "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./build/",
+    "outDir": "./build/bundle/",
     "esModuleInterop": true,
     "strict": true,
     "typeRoots": [ "./src/types", "./node_modules/@types" ]

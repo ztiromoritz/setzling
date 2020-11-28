@@ -69,3 +69,11 @@ pre {
     padding: 20px 0;
     font-size: 30px;
 }
+
+.debug {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: red;
+    opacity: 0.6;
+}

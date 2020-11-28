@@ -1,14 +1,16 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import typescript from '@rollup/plugin-typescript';
 
-const { PRODUCTION } = process.env
+const {PRODUCTION} = process.env
 
 export default {
-    input: 'build/index.js',
+    input: 'src/index.ts',
     output: {
         dir: 'build/bundle/',
-        format: 'es'
+        format: 'es',
+        sourcemap: 'inline'
     },
     plugins: [
         replace({
@@ -19,5 +21,10 @@ export default {
         resolve({
             preferBuiltins: false
         }),
-        commonjs()]
+        typescript({
+            sourceMap: false,
+            tsconfig: './tsconfig.json',
+        }),
+        commonjs()
+    ]
 };

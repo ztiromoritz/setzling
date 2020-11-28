@@ -177,12 +177,7 @@ export const draft = () => {
                             if (message.options.patches) {
                                 state = applyPatches(state, message.options.patches);
                             }
-                            const $pre = document.querySelector('pre')
-                            if ($pre) {
-                                $pre.innerHTML = JSON.stringify(state, null, 2);
-                            }
-                            render(state);
-                            break;
+                            render(state);break;
                         case "Login":
                             let clientID:string = message.clientId;
                             console.log("My client ID is "+clientID);

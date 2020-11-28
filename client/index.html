@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-<>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -19,13 +18,14 @@ console.log("githash ", "##gitHash##");
 </script>
 <script src='https://meet.jit.si/external_api.js'></script>
 <script type="module" src="./build/bundle/index.js"></script>
+<div class="debug">
+</div>
 <div class="grid-container">
     <!--div id="grid-header"></div-->
     <div id="grid-menu"></div>
     <div id="grid-main"></div>
     <div id="grid-right">
         <div id="meet" class="sidebar-element"></div>
-
         <input type="range" min="30" max="300" value="50" id="communication_range_slider">
         <label for="communication_range_slider" id="communication_range_label">Range: 100</label>
     </div>
