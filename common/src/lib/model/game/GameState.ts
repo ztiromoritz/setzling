@@ -1,5 +1,7 @@
 export type GameId = string;
 
+export type ClientId = string;
+
 export interface Point {
   x: number,
   y: number

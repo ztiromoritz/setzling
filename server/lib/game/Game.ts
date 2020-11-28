@@ -68,6 +68,7 @@ export class Game {
                             communicationRange: 50
                         })
                     }
+                    this.sendUserMessage({type: "Login", clientId: clientId}, clientId); // let client know their ID
                     break;
                 case 'LeaveGame':
                     console.log('LeaveGame')

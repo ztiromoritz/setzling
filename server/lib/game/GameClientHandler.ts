@@ -1,5 +1,6 @@
 import { GameHistory, SnapshotId } from "./GameDriver";
 import {
+    ClientId,
     ClientMessageHandler,
     ClientMessageType, CommunicationRangeUpdateMessage, ControlUpdateMessage,
     GameId, GameState,
@@ -19,11 +20,15 @@ type GameClient = {
     currentPatchIndex: number
     gameId: GameId | null
     socket: WebSocket
-    id: string
+    id: ClientId
 };
 
 const NOT_EQUAL = (client: any) => (_: any) => (_.id !== client.id)
 const HAS_GAME_ID = (gameId: GameId) => (_:GameClient)=> _.gameId === gameId;
+
+const sendMessageToClient = function(client: GameClient, message: any) {
+    client.socket.send(JSON.stringify(message));
+}
 
 export class GameClientHandler implements GameClientNotifier {
     private clients: GameClient[];
@@ -89,7 +94,7 @@ export class GameClientHandler implements GameClientNotifier {
                     };
                     client.currentPatchIndex = history.patches.length;
                     client.currentSnapshotId = history.snapshotId;
-                    client.socket.send(JSON.stringify(message));
+                    sendMessageToClient(client, message);
                 } else {
                     const patches = history.patches.slice(client.currentPatchIndex);
                     if(patches.length === 0)
@@ -102,7 +107,7 @@ export class GameClientHandler implements GameClientNotifier {
                         }
                     };
                     client.currentPatchIndex = history.patches.length;
-                    client.socket.send(JSON.stringify(message));
+                    sendMessageToClient(client, message)
                 }
             })
     }
@@ -128,6 +133,7 @@ export class GameClientHandler implements GameClientNotifier {
                 const gameId = message?.options.gameId;
                 client.gameId = gameId;
                 dispatch(message, gameId);
+                sendMessageToClient(client, {type: "Login", clientId: client.id})
             },
             LeaveGame(message: LeaveGameMessage) {
                 // TODO: check client.gameId here
