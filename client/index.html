@@ -1,98 +1,22 @@
 <!doctype html>
 <html lang="en">
-<head>
+<>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Setzling</title>
-    <!--<script src="https://unpkg.com/immer"></script> -->
-   <!-- --> <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
+    <link href="./style.css" rel="stylesheet">
+    <!--
+    <script src="https://unpkg.com/immer"></script>
+    <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
+    -->
 </head>
 <body style="position: relative;">
-<style>
-    body {
-        margin:0;
-        padding: 0;
-        background: #111111;
-        image-rendering: optimizeSpeed;              /* Older versions of FF */
-        image-rendering: -moz-crisp-edges;           /* FF 6.0+ */
-        image-rendering: -webkit-optimize-contrast;  /* Webkit (non standard naming) */
-        image-rendering: -o-crisp-edges;             /* OS X & Windows Opera (12.02+) */
-        image-rendering: pixelated;                /* Possible future browsers. */
-        -ms-interpolation-mode: nearest-neighbor;    /* IE (non standard naming) */
-        image-rendering: crisp-edges;                  /* Chrome 41 */
-        height: 100vh;
-        width: 100vw;
-        margin: auto;
-        width: 100%;
-        text-align:center;
-    }
-
-    canvas {
-        image-rendering: -moz-crisp-edges;
-        image-rendering: -webkit-crisp-edges;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
-        z-index: -10;
-        // position: absolute;
-
-    }
-
-    #game {
-        width: 800px;
-        height: 800px;
-        z-index: 10;
-        //background-color: #bbbbbb;
-    }
-    pre {
-        color: white;
-    }
-
-    .player {
-        display: block;
-        width: 10px;
-        height: 10px;
-        border-radius: 5px;
-        background-color: red;
-        position: absolute;
-    }
-
-    #grid-header { grid-area: header; }
-    #grid-menu { grid-area: menu; }
-    #grid-main { grid-area: main; }
-    #grid-right { grid-area: right; }
-    #grid-footer { grid-area: footer; }
-    .grid-container {
-        display: grid;
-        grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
-        grid-gap: 10px;
-        // background-color: #2196F3;
-        padding: 10px;
-    }
-
-    .grid-container > div {
-        // background-color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        padding: 20px 0;
-        font-size: 30px;
-    }
-</style>
-<!--
-<pre style="position: absolute; opacity: 0.4;">
-</pre>
-<div id="game">
-
-</div>
--->
 <script>
 window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
 console.log("githash ", "##gitHash##");
 </script>
-
 <script src='https://meet.jit.si/external_api.js'></script>
 <script type="module" src="./build/bundle/index.js"></script>
 <div class="grid-container">

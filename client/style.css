@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #111111;
+    image-rendering: pixelated;
+
+    height: 100vh;
+    width: 100vw;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    z-index: -10;
+}
+
+#game {
+    width: 800px;
+    height: 800px;
+    z-index: 10;
+}
+
+pre {
+    color: white;
+}
+
+.player {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: red;
+    position: absolute;
+}
+
+#grid-header {
+    grid-area: header;
+}
+
+#grid-menu {
+    grid-area: menu;
+}
+
+#grid-main {
+    grid-area: main;
+}
+
+#grid-right {
+    grid-area: right;
+}
+
+#grid-footer {
+    grid-area: footer;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.grid-container > div {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+}

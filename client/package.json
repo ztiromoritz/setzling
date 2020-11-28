@@ -8,6 +8,7 @@
     "build:main": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "build:rollup": "rollup -c",
+    "test:unit": "nyc --silent ava",
     "watch": "run-p watch:*",
     "watch:main": "tsc -w -p tsconfig.json",
     "watch:module": "tsc -w -p tsconfig.module.json"
