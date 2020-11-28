@@ -11,10 +11,11 @@ export const debug = ()=>{
     setInterval(()=>{
         if((performance as any).memory && debugSection){
             const memory: MemoryInfo = (performance as any).memory as MemoryInfo;
+            const format = (sizeInByte:number) =>( (sizeInByte/1024).toFixed(2).toString().padStart(14,' ') + ' kb' )
             debugSection.innerHTML = `<pre>
-                jsHeapSizeLimit : ${memory.jsHeapSizeLimit}
-                totalJSHeapSize : ${memory.totalJSHeapSize}
-                usedJSHeapSize  : ${memory.usedJSHeapSize}
+jsHeapSizeLimit : ${format(memory.jsHeapSizeLimit) }
+totalJSHeapSize : ${format(memory.totalJSHeapSize)}
+usedJSHeapSize  : ${format(memory.usedJSHeapSize)}
             </pre>`;
             memory.jsHeapSizeLimit
         }}, 1000);

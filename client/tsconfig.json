@@ -6,6 +6,10 @@
     "outDir": "./build/bundle/",
     "esModuleInterop": true,
     "strict": true,
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "typeRoots": [ "./src/types", "./node_modules/@types" ]
   }
 }
