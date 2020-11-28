@@ -1,6 +1,6 @@
 import { Game } from "./Game";
 import {produceWithPatches} from "immer";
-import { GameId, GameState } from "setzling-common";
+import {ClientId, GameId, GameState} from "setzling-common";
 import { Patch } from "immer/dist/types/types-external";
 import { hostname } from "os";
 import { GameClientNotifier } from "./GameClientNotifier";
@@ -32,7 +32,8 @@ export class GameDriver {
     private initializeState(): GameState {
         return {
             id: this.game.id,
-            players: []
+            players: [],
+            jitsiSessions: []
         }
     }
 
@@ -69,7 +70,7 @@ export class GameDriver {
         }
     }
 
-    sendUserMessage(message : any, clientId: string) { // TODO Message Typing
+    sendUserMessage(message : any, clientId: ClientId) { // TODO Message Typing
         this.game.sendUserMessage(message, clientId);
     }
 

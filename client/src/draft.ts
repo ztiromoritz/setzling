@@ -1,5 +1,5 @@
 import {enablePatches, applyPatches} from "immer";
-import {GameState, Player} from "setzling-common";
+import {GameState, JitsiRoomId, LoginMessage, Player} from "setzling-common";
 import * as PIXI from 'pixi.js';
 import {Sprite} from "pixi.js";
 
@@ -89,12 +89,17 @@ export const draft = () => {
         communicationRangeLayer.drawCircle(player.position.x, player.position.y, player.communicationRange);
     }
 
-    function appendJitsiIntegration(roomId: string) {
+    function appendJitsiIntegration(roomId: JitsiRoomId) {
         const domain = 'meet.jit.si';
         const options = {
             roomName: roomId,
             width: 400,
             height: 400,
+            configOverwrite: {
+                startWithAudioMuted: false,
+                prejoinPageEnabled: false
+            },
+            //interfaceConfigOverwrite: {},
             parentNode: document.querySelector('#meet')
         };
         const api = new (window as any).JitsiMeetExternalAPI(domain, options);
@@ -112,6 +117,8 @@ export const draft = () => {
             bindKeysToSounds(toneResources);
 
             addTreeToScene(pixiResources);
+
+            appendJitsiIntegration("kevintrompeteisthier");
 
             enablePatches();
 
@@ -179,8 +186,8 @@ export const draft = () => {
                             }
                             render(state);break;
                         case "Login":
-                            let clientID:string = message.clientId;
-                            console.log("My client ID is "+clientID);
+                            let clientId:string = (message as LoginMessage).options.clientId;
+                            console.log("My client ID is "+clientId);
                             break;
                         default:
                             console.error("Unable to handle incoming websocket message of type: "+message.type);

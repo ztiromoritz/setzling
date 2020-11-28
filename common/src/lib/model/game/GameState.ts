@@ -24,7 +24,15 @@ export interface Player {
   communicationRange: number
 }
 
+export type JitsiRoomId = string;
+
+export interface JitsiCommunication {
+  roomId: JitsiRoomId,
+  participants: Player[]
+}
+
 export interface GameState {
     id: GameId;
+    jitsiSessions: JitsiCommunication[],
     players : Player[],
 }

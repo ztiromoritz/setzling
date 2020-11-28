@@ -5,7 +5,7 @@ import {
     Point,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage
+    LoginMessage, ClientId
 } from 'setzling-common';
 import produce, { applyPatches } from "immer"
 
@@ -76,13 +76,6 @@ export class Game {
                             communicationRange: 50
                         })
                     }
-                    const loginMessage: LoginMessage = {
-                        type: "Login",
-                        options: {
-                            clientId
-                        }
-                    }
-                    this.sendUserMessage(loginMessage, clientId); // let client know their ID
                     break;
                 case 'LeaveGame':
                     console.log('LeaveGame')
@@ -135,7 +128,7 @@ export class Game {
     }
 
 
-    public sendUserMessage(message: any, clientId: string) {
+    public sendUserMessage(message: any, clientId: ClientId) {
         this.messageQueue.push({ message, clientId })
     }
 

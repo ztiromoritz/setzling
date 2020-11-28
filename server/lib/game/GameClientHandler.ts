@@ -5,7 +5,7 @@ import {
     ClientMessageType, CommunicationRangeUpdateMessage, ControlUpdateMessage,
     GameId, GameState,
     JoinGameMessage,
-    LeaveGameMessage, UpdateStateMessage
+    LeaveGameMessage, LoginMessage, UpdateStateMessage
 } from "setzling-common";
 import { Server } from "ws";
 import * as WebSocket from 'ws';
@@ -133,7 +133,13 @@ export class GameClientHandler implements GameClientNotifier {
                 const gameId = message?.options.gameId;
                 client.gameId = gameId;
                 dispatch(message, gameId);
-                sendMessageToClient(client, {type: "Login", clientId: client.id})
+                const loginMessage: LoginMessage = {
+                    type: "Login",
+                    options: {
+                        clientId: client.id
+                    }
+                }
+                sendMessageToClient(client, loginMessage); // let client know their ID
             },
             LeaveGame(message: LeaveGameMessage) {
                 // TODO: check client.gameId here
