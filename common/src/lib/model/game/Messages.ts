@@ -1,6 +1,6 @@
 import { Patch } from "immer";
 
-import { Controls, GameId, GameState } from "./GameState";
+import {ClientId, Controls, GameId, GameState} from "./GameState";
 
 // Client Messages
 export type ClientMessageType =
@@ -44,7 +44,7 @@ export type ClientMessageHandler = {
 }
 
 
-// Server Messages
+// === SERVER MESSAGES ===
 export type ServerMessageType =
   'UpdateState'
 
@@ -61,7 +61,15 @@ export type UpdateStateMessage = {
   }
 }
 
+export type LoginMessage = {
+  type: "Login",
+  options: {
+    clientId: ClientId
+  }
+}
+
 
 export type ServerMessageHandler = {
   UpdateState?: (msg: UpdateStateMessage) => void
+  Login?: (msg: LoginMessage) => void
 }

@@ -17,7 +17,7 @@ export interface Controls {
 }
 
 export interface Player {
-  clientId: string,
+  clientId: ClientId,
   name?: string,
   position: Point,
   controls: Controls,
