@@ -6,6 +6,9 @@ import {Sprite} from "pixi.js";
 import {Assets, PixiResources, ToneResources} from "./assets";
 import {testMap} from "./tileMapTest";
 import {mainRenderer} from "./pixi-helper";
+import {initializeKeys} from "./controls/keys";
+import {initializeRangeSlider} from "./controls/rangeSlider";
+import {bindKeysToSounds} from "./controls/soundKey";
 
 
 export const draft = () => {
@@ -20,36 +23,6 @@ export const draft = () => {
         else
             document.body.prepend(mainRenderer.view);
         return app;
-    }
-
-    function bindKeysToSounds(toneResources: ToneResources) {
-        document.addEventListener("keydown", (event: KeyboardEvent) => {
-            console.log("Key was pressed: ", event);
-            if (event.key === 'q') {
-                toneResources.samplers?.guitarMajor.triggerAttackRelease(["C4"], 4);
-                return;
-            }
-            if (event.key === 'w') {
-                toneResources.samplers?.guitarMinor.triggerAttackRelease(["D4"], 4);
-                return;
-            }
-            if (event.key === 'e') {
-                toneResources.samplers?.guitarMinor.triggerAttackRelease(["E4"], 4);
-                return;
-            }
-            if (event.key === 'r') {
-                toneResources.samplers?.guitarMajor.triggerAttackRelease(["F4"], 4);
-                return;
-            }
-            if (event.key === 't') {
-                toneResources.samplers?.guitarMajor.triggerAttackRelease(["G4"], 4);
-                return;
-            }
-            if (event.key === 'z') {
-                toneResources.samplers?.guitarMinor.triggerAttackRelease(["A4"], 4);
-                return;
-            }
-        });
     }
 
     function addTreeToScene(pixiResources: PixiResources) {
@@ -180,7 +153,6 @@ export const draft = () => {
                 ws.send(JSON.stringify(msg));
             };
 
-
             ws.onmessage = (() => {
                 let state: GameState;
                 return function (event: MessageEvent) {
@@ -208,87 +180,8 @@ export const draft = () => {
             })();
 
 
-            let arrows = {
-                up: false,
-                down: false,
-                left: false,
-                right: false
-            };
+            initializeRangeSlider(ws);
+            initializeKeys(ws);
 
-            function sendControlUpdate() {
-                const msg = {
-                    type: 'ControlUpdate',
-                    options: {
-                        controls: {arrows}
-                    }
-                }
-                ws.send(JSON.stringify(msg));
-            }
-
-            function sendCommunicationRangeUpdate(range: number) {
-                const msg = {
-                    type: 'CommunicationRangeUpdate',
-                    options: {
-                        range: range
-                    }
-                }
-                ws.send(JSON.stringify(msg));
-            }
-
-
-            // handle range slider
-            let rangeSlider = document.querySelector("#communication_range_slider");
-            let communicationRange = 50;
-            const onUpdateRangeSlider = (rangeSlider: any, rangeLabel: any) => {
-                let newValue;
-                if (rangeSlider != null) {
-                    newValue = rangeSlider.value;
-                }
-                if (rangeLabel != null) {
-                    rangeLabel.innerHTML = "Range: " + newValue;
-                }
-                communicationRange = newValue;
-                sendCommunicationRangeUpdate(newValue)
-                rangeSlider.blur(); // lose focus after changing value
-            };
-            if (rangeSlider != null) {
-                let rangeLabel = document.querySelector("#communication_range_label");
-                rangeSlider.addEventListener("input", () => {
-                    onUpdateRangeSlider(rangeSlider, rangeLabel)
-                });
-                rangeSlider.addEventListener("change", () => {
-                    onUpdateRangeSlider(rangeSlider, rangeLabel)
-                }); // add onInput and onChange, as Firefox & Chrome trigger on input, while IE10 on change
-                console.log("... initialized slider!");
-            } else {
-                console.error("Range slider cannot be found!");
-            }
-
-
-            document.addEventListener('keyup', (e) => {
-                if (e.code === "ArrowUp") {
-                    arrows.up = false;
-                } else if (e.code === "ArrowDown") {
-                    arrows.down = false;
-                } else if (e.code === "ArrowLeft") {
-                    arrows.left = false;
-                } else if (e.code === "ArrowRight") {
-                    arrows.right = false;
-                }
-                sendControlUpdate();
-            })
-
-            document.addEventListener('keydown', (e) => {
-                if (e.code === "ArrowUp") {
-                    arrows.up = true;
-                } else if (e.code === "ArrowDown") {
-                    arrows.down = true;
-                } else if (e.code === "ArrowLeft") {
-                    arrows.left = true;
-                } else if (e.code === "ArrowRight") {
-                    arrows.right = true;
-                }
-                sendControlUpdate();
-            })
         });
 }
