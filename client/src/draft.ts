@@ -4,6 +4,8 @@ import * as PIXI from 'pixi.js';
 import {Sprite} from "pixi.js";
 
 import {Assets, PixiResources, ToneResources} from "./assets";
+import {testMap} from "./tileMapTest";
+import {mainRenderer} from "./pixi-helper";
 
 
 export const draft = () => {
@@ -14,9 +16,9 @@ export const draft = () => {
         // app.view.style.cssText = "position: absolute; top: 0; left: 0; bottom: 0: right: 0;";
         let mainSection = document.querySelector('#grid-main')
         if (mainSection != null)
-            mainSection.prepend(app.view);
+            mainSection.prepend(mainRenderer.view);
         else
-            document.body.prepend(app.view);
+            document.body.prepend(mainRenderer.view);
         return app;
     }
 
@@ -122,9 +124,15 @@ export const draft = () => {
 
             enablePatches();
 
+
+
             // prepare stage for drawing communication range later
             let communicationRangeLayer = new PIXI.Graphics();
             app.stage.addChild(communicationRangeLayer);
+
+            testMap(app, pixiResources);
+
+            mainRenderer.render(app.stage);
 
             function render(state: GameState) {
                 app.stage.children.sort(function (a, b) {
@@ -154,6 +162,8 @@ export const draft = () => {
                 if ($game) {
                     $game.innerHTML = "";
                 }
+
+                mainRenderer.render(app.stage);
             }
 
 
@@ -177,14 +187,15 @@ export const draft = () => {
                     const message = JSON.parse(event.data);
                     switch (message.type) {
                         case 'UpdateState':
-                            console.log('UpdateState', message.options);
+                            // console.log('UpdateState', message.options);
                             if (message.options.snapshot) {
                                 state = message.options.snapshot
                             }
                             if (message.options.patches) {
                                 state = applyPatches(state, message.options.patches);
                             }
-                            render(state);break;
+                            render(state);
+                            break;
                         case "Login":
                             let clientId:string = (message as LoginMessage).options.clientId;
                             console.log("My client ID is "+clientId);

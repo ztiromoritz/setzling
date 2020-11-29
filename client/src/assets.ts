@@ -20,6 +20,7 @@ export class Assets {
             pixi.loader
                 .add('tree', './assets/tree.png')
                 .add('setzling', './assets/setzling.png')
+                .add('tileset', './assets/Tileset.png')
                 .load((loader, resources)=>{
                     resolve(resources);
                 });
