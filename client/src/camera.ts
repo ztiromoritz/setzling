@@ -62,4 +62,13 @@ export class Camera {
         }
     }
 
+    getWorldRect(){
+        return {
+            x: this.leftWorld,
+            y: this.topWorld,
+            width: this.width,
+            height: this.height
+        }
+    }
+
 }

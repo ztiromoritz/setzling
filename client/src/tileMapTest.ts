@@ -11,9 +11,7 @@ Perlin.seed(1);
 export function testMap(app: PIXI.Application, resources: PixiResources){
     function tileCallback(tileX: number, tileY: number): number {
         const perlin = Perlin.simplex2(tileX, tileY);
-
         const rndInt = Math.floor(Math.abs(perlin * 20));
-        console.log(perlin, rndInt);
         return Math.max(rndInt-17,0);
     }
     const tileMap = new TileMap({

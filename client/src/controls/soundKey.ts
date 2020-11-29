@@ -3,7 +3,6 @@ import {ToneResources} from "../assets";
 
 export function bindKeysToSounds(toneResources: ToneResources) {
     document.addEventListener("keydown", (event: KeyboardEvent) => {
-        console.log("Key was pressed: ", event);
         if (event.key === 'q') {
             toneResources.samplers?.guitarMajor.triggerAttackRelease(["C4"], 4);
             return;

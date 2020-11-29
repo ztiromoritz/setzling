@@ -9,7 +9,10 @@ import {mainRenderer} from "./pixi-helper";
 import {initializeKeys} from "./controls/keys";
 import {initializeRangeSlider} from "./controls/rangeSlider";
 import {bindKeysToSounds} from "./controls/soundKey";
+import {Camera} from "./camera";
 
+// immer setup
+enablePatches();
 
 export const draft = () => {
     function initializePIXI() {
@@ -60,8 +63,10 @@ export const draft = () => {
     }
 
     function drawCommunicationRange(player: Player, communicationRangeLayer: any) {
+        communicationRangeLayer.clear();
         communicationRangeLayer.lineStyle(1, 0xff0000, 0.5)
         communicationRangeLayer.drawCircle(player.position.x, player.position.y, player.communicationRange);
+       // communicationRangeLayer.drawRect(player.position.x, player.position.y,100,100);
     }
 
     function appendJitsiIntegration(roomId: JitsiRoomId) {
@@ -82,32 +87,52 @@ export const draft = () => {
 
     const app = initializePIXI();
 
+    type LocalState = {
+        clientId: string | undefined,
+        camera: Camera
+    };
+    let localState: LocalState = {
+        clientId: undefined,
+        camera : new Camera({
+            width: 100,
+            height: 100,
+            leftWorld: 0,
+            topWorld: 0
+        })
+    };
+
+    console.log("initial Camera ",localState.camera);
+
     Assets
         .loadAll(app)
         .then(({pixiResources, toneResources}) => {
 
-            const $game = document.querySelector('#game');
-            const seedlings = preallocateSeedlings(pixiResources, 20);
-
             bindKeysToSounds(toneResources);
-
-            addTreeToScene(pixiResources);
 
             appendJitsiIntegration("kevintrompeteisthier");
 
-            enablePatches();
-
-
+            // init scene
+            const seedlings = preallocateSeedlings(pixiResources, 20);
+            addTreeToScene(pixiResources);
 
             // prepare stage for drawing communication range later
             let communicationRangeLayer = new PIXI.Graphics();
             app.stage.addChild(communicationRangeLayer);
 
             testMap(app, pixiResources);
+            
+            const camGraphics = new PIXI.Graphics();
+            app.stage.addChild(camGraphics);
 
-            mainRenderer.render(app.stage);
-
+            // currently this is update & render in one function
             function render(state: GameState) {
+                const me = state.players.find((player)=>player.clientId === localState.clientId);
+                if(me){
+                    console.log("mee ",me.x, me.y)
+                    localState.camera.centerOn({x: me.position.x, y: me.position.y})
+                }
+
+                // z-index
                 app.stage.children.sort(function (a, b) {
                     if (a.position.y > b.position.y) return 1;
                     if (a.position.y < b.position.y) return -1;
@@ -117,12 +142,9 @@ export const draft = () => {
                     child.zIndex = child.y;
                 })
 
-
+                // seedlings and range
                 seedlings.forEach(s => s.visible = false);
-
                 let color = 0;
-                app.stage.removeChild(communicationRangeLayer);
-                communicationRangeLayer = new PIXI.Graphics();
                 state.players.forEach((player: any) => {
                     const seedling = seedlings[color++];
                     seedling.x = player.position.x;
@@ -130,14 +152,25 @@ export const draft = () => {
                     seedling.visible = true;
                     drawCommunicationRange(player, communicationRangeLayer);
                 })
-                app.stage.addChild(communicationRangeLayer);
 
-                if ($game) {
-                    $game.innerHTML = "";
-                }
 
-                mainRenderer.render(app.stage);
+                // camera
+                camGraphics.clear();
+                const {x,y,width, height} = localState.camera.getWorldRect();
+                console.log(localState.camera.getWorldRect(), "me: "+me);
+                camGraphics.lineStyle(1, 0x00ff00, 0.5)
+                camGraphics.drawRect(x,y,width,height);
+
+
+               mainRenderer.render(app.stage);
             }
+
+
+
+            // State-update & message handling
+            let state: GameState;
+            let stateIsDirty = false;
+
 
 
             const ws = new WebSocket((window as any).WEB_SOCKET_BASE_URL);
@@ -151,10 +184,12 @@ export const draft = () => {
                 }
                 console.log("Joined game: "+gameId);
                 ws.send(JSON.stringify(msg));
+
+                initializeRangeSlider(ws);
+                initializeKeys(ws);
             };
 
             ws.onmessage = (() => {
-                let state: GameState;
                 return function (event: MessageEvent) {
                     const message = JSON.parse(event.data);
                     switch (message.type) {
@@ -166,11 +201,12 @@ export const draft = () => {
                             if (message.options.patches) {
                                 state = applyPatches(state, message.options.patches);
                             }
-                            render(state);
+                            stateIsDirty = true;
                             break;
                         case "Login":
                             let clientId:string = (message as LoginMessage).options.clientId;
                             console.log("My client ID is "+clientId);
+                            localState.clientId = clientId;
                             break;
                         default:
                             console.error("Unable to handle incoming websocket message of type: "+message.type);
@@ -179,9 +215,16 @@ export const draft = () => {
                 }
             })();
 
+            // Render-Loop
+            function step(timestamp){
+                if(stateIsDirty){
+                    render(state);
+                    stateIsDirty = false;
+                }
+                window.requestAnimationFrame(step);
+            }
+            window.requestAnimationFrame(step);
 
-            initializeRangeSlider(ws);
-            initializeKeys(ws);
 
         });
 }
