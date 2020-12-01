@@ -19,18 +19,19 @@ console.log("githash ", "##gitHash##");
 </script>
 <script src='https://meet.jit.si/external_api.js'></script>
 <script type="module" src="./build/bundle/index.js"></script>
-<div class="debug">
-</div>
+<div class="performance-debug"></div>
+<div class="render-debug"></div>
 <div class="grid-container">
     <!--div id="grid-header"></div-->
     <div id="grid-menu"></div>
     <div id="grid-main"></div>
+    <div id="grid-game"></div>
     <div id="grid-right">
         <div id="meet" class="sidebar-element"></div>
         <input type="range" min="30" max="300" value="50" id="communication_range_slider">
         <label for="communication_range_slider" id="communication_range_label">Range: 100</label>
     </div>
-    <!--div id="grid-footer"></div-->
+    <div id="grid-footer"></div>
 </div>
 </body>
 </html>

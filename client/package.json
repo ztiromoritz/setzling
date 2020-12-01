@@ -28,6 +28,7 @@
     "lib-jitsi-meet": "^1.0.6",
     "lindenmayer": "^1.5.4",
     "perlin.js": "^1.0.0",
+    "phaser": "^3.24.1",
     "pixi.js": "^5.3.3",
     "pixi.js-legacy": "^5.3.3",
     "setzling-common": "file:../common/",

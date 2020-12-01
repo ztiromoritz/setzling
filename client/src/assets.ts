@@ -7,6 +7,11 @@ export type SetzlingResources = {
     toneResources: ToneResources
 };
 
+export const toneAssets : SetzlingResources =  {
+    pixiResources: {},
+    toneResources: {}
+};
+
 export class Assets {
     static async loadAll(pixi: PIXI.Application) : Promise<SetzlingResources>{
         const pixiResourcesPromise = Assets.loadPixi(pixi);

@@ -14,4 +14,4 @@ export function createFrames(texture: PIXI.Texture, {frameWidth, frameHeight}: {
 };
 
 
-export const mainRenderer = PIXI.autoDetectRenderer({width: 800, height: 600});
+export const mainRenderer = PIXI.autoDetectRenderer({width: 1200, height: 800});

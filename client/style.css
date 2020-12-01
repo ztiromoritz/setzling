@@ -15,15 +15,12 @@ canvas {
     z-index: -10;
 }
 
-#game {
+#grid-game {
     width: 800px;
     height: 800px;
     z-index: 10;
 }
 
-pre {
-    color: white;
-}
 
 .player {
     display: block;
@@ -70,10 +67,18 @@ pre {
     font-size: 30px;
 }
 
-.debug {
+.performance-debug {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    color: red;
-    opacity: 0.6;
+    color: lightpink;
+    opacity: 1;
+}
+
+.render-debug {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    color: lightpink;
+    opacity: 1;
 }

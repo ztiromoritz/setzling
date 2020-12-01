@@ -2,31 +2,46 @@ export type XCam = number;
 export type YCam = number;
 export type XWorld = number;
 export type YWorld = number;
+export type XScreen = number;
+export type YScreen = number;
 
+
+// Position on the games canvas
+export type ScreenCoords = {x: XScreen, y:YScreen};
+
+// Position on the cameras Viewport.
 export type CamCoords = { x: XCam, y: YCam };
+
+// Position on the World
 export type WorldCoords = { x: XWorld, y: YWorld };
+
+export type CameraOptions = {
+    width: number,
+    height: number,
+    positionOnScreen: ScreenCoords,
+    positionInWorld: WorldCoords
+}
+
 
 // scale 1:1
 export class Camera {
     private width: number;
     private height: number;
-    private topWorld: number;
-    private leftWorld: number;
     private halfWidth: number;
     private halfHeight: number;
 
-    constructor({width, height, leftWorld, topWorld}: { width: number, height: number, leftWorld: number, topWorld: number }) {
-        this.leftWorld = leftWorld;
-        this.topWorld = topWorld;
-        this.width = width;
-        this.height = height;
+
+    private positionOnScreen: ScreenCoords;
+    private positionInWorld: WorldCoords;
+
+
+    constructor(options : CameraOptions) {
+        this.width = options.width;
+        this.height = options.height;
         this.halfWidth = Math.floor(this.width / 2);
         this.halfHeight = Math.floor(this.height / 2);
-    }
-
-    move({leftWorld, topWorld}: { leftWorld: number, topWorld: number }) {
-        this.leftWorld = leftWorld;
-        this.topWorld = topWorld;
+        this.positionOnScreen = {...options.positionOnScreen};
+        this.positionInWorld = {...options.positionInWorld};
     }
 
     setDimension({width, height}: { width: number, height: number }) {
@@ -36,17 +51,24 @@ export class Camera {
         this.halfHeight = Math.floor(this.height / 2);
     }
 
+    setPositionInWorld(position: WorldCoords){
+        this.positionInWorld = {...position};
+    }
+
+    setPositionOnScreen(position: ScreenCoords){
+        this.positionOnScreen = {...position};
+    }
 
     centerOn(world: WorldCoords) {
-        const leftWorld = world.x - this.halfWidth;
-        const topWorld = world.y - this.halfHeight;
-        this.move({leftWorld, topWorld})
+        const x = world.x - this.halfWidth;
+        const y = world.y - this.halfHeight;
+        this.setPositionInWorld({x, y});
     }
 
     camXYtoWorldXY(cam: CamCoords): WorldCoords {
         return {
-            x: this.leftWorld + cam.x,
-            y: this.topWorld + cam.y,
+            x: this.positionInWorld.x + cam.x,
+            y: this.positionInWorld.y + cam.y,
         };
     }
 
@@ -57,15 +79,31 @@ export class Camera {
 
     worldXYToCamXY(world: WorldCoords): CamCoords {
         return {
-            x: world.x - this.leftWorld,
-            y: world.y - this.topWorld,
+            x: world.x - this.positionInWorld.x,
+            y: world.y - this.positionInWorld.y,
+        }
+    }
+
+    worldXYToScreenXY(world: WorldCoords): ScreenCoords {
+        const camCoords = this.worldXYToCamXY(world);
+        return {
+            x: camCoords.x + this.positionOnScreen.x,
+            y: camCoords.y + this.positionOnScreen.y
+        }
+    }
+
+
+    getScreenRect(): {width: number, height: number, position: ScreenCoords} {
+        return {
+            position : {...this.positionOnScreen},
+            width: this.width,
+            height: this.height
         }
     }
 
     getWorldRect(){
         return {
-            x: this.leftWorld,
-            y: this.topWorld,
+            position: {...this.positionInWorld},
             width: this.width,
             height: this.height
         }

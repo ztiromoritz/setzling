@@ -7,7 +7,7 @@ const renderer = PIXI.autoDetectRenderer();
 type MapOptions = {
     tileWidth: number,
     tileHeight: number,
-    tileset: PIXI.Texture,
+    tileset?: PIXI.Texture,
     tileCallback: (tileX: number, tileY: number) => number
 };
 
@@ -22,20 +22,23 @@ export class TileMap {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         console.log("tileset ",tileset);
-        this.tiles = createFrames(tileset, {frameWidth: tileWidth, frameHeight: tileHeight});
+        this.tiles = [];
+        if(tileset){
+            this.tiles = createFrames(tileset, {frameWidth: tileWidth, frameHeight: tileHeight});
+        }
         this.sprites = this.tiles.map((texture) => new PIXI.Sprite(texture));
         this.tileCallback = tileCallback
     }
 
-    renderToTexture(renderTexture: PIXI.RenderTexture, rect: PIXI.Rectangle) {
+    renderToTexture(renderTexture: PIXI.RenderTexture, worldRect: PIXI.Rectangle) {
         if (renderTexture) {
-            const tileLeft = Math.floor(rect.left / this.tileWidth);
-            const xOffset = rect.left % this.tileWidth;
-            const cols = Math.floor(rect.width / this.tileWidth);
+            const tileLeft = Math.floor(worldRect.left / this.tileWidth);
+            const xOffset = worldRect.left % this.tileWidth;
+            const cols = Math.floor(worldRect.width / this.tileWidth);
 
-            const tileTop = Math.floor(rect.top / this.tileHeight);
-            const yOffset = rect.top % this.tileHeight;
-            const rows = Math.floor(rect.height / this.tileHeight);
+            const tileTop = Math.floor(worldRect.top / this.tileHeight);
+            const yOffset = worldRect.top % this.tileHeight;
+            const rows = Math.floor(worldRect.height / this.tileHeight);
 
             for (let tileX = tileLeft; tileX < tileLeft + cols; tileX++) {
                 for (let tileY = tileTop; tileY < tileTop + rows; tileY++) {

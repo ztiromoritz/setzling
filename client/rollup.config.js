@@ -12,6 +12,10 @@ export default {
         format: 'es',
         sourcemap: 'inline'
     },
+    watch: {
+        chokidar : 'src/**',
+        usePolling: true
+    },
     plugins: [
         replace({
             'process.env.NODE_ENV': JSON.stringify(
