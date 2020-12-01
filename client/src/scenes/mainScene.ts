@@ -29,6 +29,16 @@ export class MainScene extends Phaser.Scene {
         this.floorLayer = createFloorLayer(this, 300,300);
 
         bindKeysToSounds((this.game as CustomGame).toneResources);
+
+        /*
+        this.cameras.main.setSize(1200,800);
+        const stateHandler = (this.game as CustomGame).stateHandler;
+        const gameState = stateHandler.getGameState();
+        const localState = stateHandler.getLocalState();
+        const me = gameState.players.find((player) => player.clientId === localState.clientId);
+        if(me){
+            this.cameras.main.startFollow(me);
+        }*/
     }
 
     update(time:number, delta:number){
@@ -40,6 +50,12 @@ export class MainScene extends Phaser.Scene {
         const localState = stateHandler.getLocalState();
 
         const me = gameState.players.find((player) => player.clientId === localState.clientId);
+        if(me){
+            this.cameras.main.scrollX = me.position.x - 600;
+            this.cameras.main.scrollY = me.position.y - 400;
+        }
+
+
 
         // seedlings and range
         this.seedlings.forEach(s => s.visible = false);

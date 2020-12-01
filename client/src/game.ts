@@ -20,7 +20,7 @@ const game: CustomGame = new Phaser.Game(gameConfig) as CustomGame;
 
 game.stateHandler = new StateHandler();
 
-appendJitsiIntegration("kevintrompeteisthier");
+// appendJitsiIntegration("kevintrompeteisthier");
 
 debugHelper.initPerformanceDebug();
 
