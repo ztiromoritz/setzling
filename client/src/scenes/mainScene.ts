@@ -1,17 +1,17 @@
 import Phaser from "phaser";
 import SettingsConfig = Phaser.Types.Scenes.SettingsConfig;
-import {PixiResources} from "../assets";
-import {Sprite} from "pixi.js";
-import PIXI from "pixi.js";
 import {debugHelper} from "../debug";
 import {CustomGame} from "../types/customGame";
 import {Player} from "../../../common/build/module";
+import {createFloorLayer} from "../map/map";
+import {bindKeysToSounds} from "../sound/soundKey";
 
 
 export class MainScene extends Phaser.Scene {
     private seedlings!: Phaser.GameObjects.Sprite[];
-    private communicationRanges: Phaser.GameObjects.Graphics;
-    private tree: Phaser.GameObjects.Sprite;
+    private communicationRanges!: Phaser.GameObjects.Graphics;
+    private tree!: Phaser.GameObjects.Sprite;
+    private floorLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
 
     constructor(config: SettingsConfig = {}) {
         Object.assign(config, {key:'MainScene'});
@@ -26,7 +26,9 @@ export class MainScene extends Phaser.Scene {
         this.communicationRanges = this.add.graphics({x:0,y:0});
         this.tree = this.add.sprite(600,400,'tree',0);
         this.tree.setScale(4,4);
+        this.floorLayer = createFloorLayer(this, 300,300);
 
+        bindKeysToSounds((this.game as CustomGame).toneResources);
     }
 
     update(time:number, delta:number){

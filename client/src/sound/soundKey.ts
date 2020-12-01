@@ -1,5 +1,5 @@
 // This is just an experiment and might go away soon.
-import {ToneResources} from "../assets";
+import {ToneResources} from "./assets";
 
 export function bindKeysToSounds(toneResources: ToneResources) {
     document.addEventListener("keydown", (event: KeyboardEvent) => {

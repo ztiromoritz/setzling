@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import GameConfig = Phaser.Types.Core.GameConfig;
 import {MainScene} from "./scenes/mainScene";
 import {StateHandler} from "./store/stateHandler";
 import {CustomGame} from "./types/customGame";
@@ -9,12 +8,12 @@ import {debugHelper} from "./debug";
 
 const gameConfig: any /* GameConfig seems to be wrong */ = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     backgroundColor: '#000000',
     scene: [PreloadScene, MainScene],
     pixelArt: true,
-    parent: 'grid-game'
+    parent: 'grid-main'
 }
 
 const game: CustomGame = new Phaser.Game(gameConfig) as CustomGame;
@@ -24,3 +23,5 @@ game.stateHandler = new StateHandler();
 appendJitsiIntegration("kevintrompeteisthier");
 
 debugHelper.initPerformanceDebug();
+
+

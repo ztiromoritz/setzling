@@ -53,10 +53,11 @@ canvas {
 
 .grid-container {
     display: grid;
-    grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
+    grid-template-areas: 'header header header'
+                         'menu main right'
+                         'menu footer footer';
+    grid-template-columns: 1fr 1200px 1fr;
+    grid-template-rows: 30px 600px auto;
     grid-gap: 10px;
     padding: 10px;
 }
