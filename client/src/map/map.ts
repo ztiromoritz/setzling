@@ -3,17 +3,17 @@ import DynamicTilemapLayer = Phaser.Tilemaps.DynamicTilemapLayer;
 
 const TILEMAP_WIDTH = 16;
 const mapGeneration = {
-    emptyChance: 90, // % of a tile having no content
+    emptyChance: 80, // % of a tile having no content
     tileTypes: {
         grass: {
             row: 0,     // the row of this tiletype in the sprite sheet
-            tiles: 5,   // how many tiles are in use
-            chance: 60  // % of this tile type being the content
+            tiles: 6,   // how many tiles are in use
+            chance: 65  // % of this tile type being the content
         },
         rocks: {
             row: 1,
             tiles: 2,
-            chance: 25
+            chance: 20
         },
         flowers: {
             row: 2,
