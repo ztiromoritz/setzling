@@ -27,7 +27,7 @@ export class MainScene extends Phaser.Scene {
         this.tree = this.add.sprite(600,400,'tree',0);
         this.tree.setScale(4,4);
         this.floorLayer = createFloorLayer(this, 300,300);
-
+        this.floorLayer.setScale(2,2);
         bindKeysToSounds((this.game as CustomGame).toneResources);
 
         /*
@@ -78,7 +78,7 @@ export class MainScene extends Phaser.Scene {
             const seedling = new Phaser.GameObjects.Sprite(this, 0, 0, 'setzling', 0);
             seedling.visible = false;
             seedling.setOrigin(0.5,0.5);
-            seedling.setScale(2,2);
+            seedling.setScale(3,3);
             seedlings.push(seedling);
             this.add.existing(seedling);
         }

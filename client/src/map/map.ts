@@ -48,7 +48,7 @@ function randomSpriteIndex(tileX: number, tileY: number): number {
 export function createFloorLayer(scene: Phaser.Scene,width: number, height: number): DynamicTilemapLayer {
     const debugMetrics: number[] = [];
     const mapData: number[][] = [];
-    for(let iy=0;iy<width;iy++){
+    for(let iy=0;iy<height;iy++){
         const row: number[] = [];
         mapData.push(row);
         for(let ix=0;ix<width;ix++){
