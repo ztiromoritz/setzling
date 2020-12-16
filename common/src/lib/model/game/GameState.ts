@@ -22,7 +22,10 @@ export interface Player {
   position: Point,
   controls: Controls,
   communicationRange: number
+  lastHorizontalDirection: HorizontalDirection
 }
+
+export type HorizontalDirection = number; // <0: left, >=0: right
 
 export type JitsiRoomId = string;
 

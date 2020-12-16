@@ -73,7 +73,8 @@ export class Game {
                             controls: {
                                 arrows: { up: false, down: false, left: false, right: false }
                             },
-                            communicationRange: 50
+                            communicationRange: 50,
+                            lastHorizontalDirection: 0
                         })
                     }
                     break;
@@ -105,7 +106,7 @@ export class Game {
     }
 
     private movement(gameState: GameState) {
-        let speed = 2;
+        let speed = 3;
         gameState.players.forEach((player) => {
             let dx = 0;
             let dy = 0;
@@ -117,9 +118,11 @@ export class Game {
                 dy = speed;
             }
             if (left) {
+                player.lastHorizontalDirection = -1;
                 dx = -speed
             }
             if (right) {
+                player.lastHorizontalDirection = 1;
                 dx = speed
             }
             player.position.x += dx;

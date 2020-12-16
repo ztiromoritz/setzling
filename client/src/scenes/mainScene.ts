@@ -64,17 +64,34 @@ export class MainScene extends Phaser.Scene {
         let color = 0;
 
         function updateAnimation(seedling: Phaser.GameObjects.Sprite, player: Player) {
-
-            if (player.controls.arrows.right) {
-                if (seedling.anims.isPlaying) {
-                    return
-                }
-                console.log("starting the animation...")
-                seedling.anims.play("walk-right")
+            let animationDown;
+            let animationUp;
+            let frameStand;
+            if (player.lastHorizontalDirection < 0) {
+                animationUp = seedling.anims.animationManager.get("walk-up-left");
+                animationDown = seedling.anims.animationManager.get("walk-left");
+                frameStand = 4;
             } else {
-                console.log("STOPPING the animation!")
-                seedling.anims.stop();
-                seedling.setFrame(0);
+                animationUp = seedling.anims.animationManager.get("walk-up-right");
+                animationDown = seedling.anims.animationManager.get("walf-right");
+                frameStand = 0;
+            }
+
+            if (player.controls.arrows.up) {
+                if (seedling.anims.currentAnim != animationUp) {
+                    seedling.anims.play(animationUp);
+                }
+            } else {
+                if (player.controls.arrows.right
+                        || player.controls.arrows.left
+                        || player.controls.arrows.down) {
+                    if (seedling.anims.currentAnim != animationDown) {
+                        seedling.anims.play(animationDown);
+                    }
+                } else {
+                    seedling.anims.stop();
+                    seedling.setFrame(frameStand);
+                }
             }
         }
 
@@ -91,13 +108,7 @@ export class MainScene extends Phaser.Scene {
     //===
     private preallocateSeedlings(amount: number) {
         const seedlings: Phaser.GameObjects.Sprite[] = [];
-        const characterAnimation = this.anims.create({
-                key: 'walk-right',
-                frames: this.anims.generateFrameNumbers('character', { start: 1, end: 3 }),
-                frameRate: 8,
-                repeat: -1,
-                yoyo: true
-            });
+        this.setupAnimations();
         for (let i = 0; i < amount; i++) {
             const seedling = new Phaser.GameObjects.Sprite(this, 0, 0, 'character', 0);
             seedling.visible = false;
@@ -107,5 +118,37 @@ export class MainScene extends Phaser.Scene {
             this.add.existing(seedling);
         }
         return seedlings;
+    }
+
+    private setupAnimations() {
+        const framerate = 8;
+        this.anims.create({
+            key: 'walk-right',
+            frames: this.anims.generateFrameNumbers('character', { start: 1, end: 3 }),
+            frameRate: framerate,
+            repeat: -1,
+            yoyo: true
+        });
+        this.anims.create({
+            key: 'walk-left',
+            frames: this.anims.generateFrameNumbers('character', { start: 5, end: 7 }),
+            frameRate: framerate,
+            repeat: -1,
+            yoyo: true
+        });
+        this.anims.create({
+            key: 'walk-up-right',
+            frames: this.anims.generateFrameNumbers('character', { start: 9, end: 11 }),
+            frameRate: framerate,
+            repeat: -1,
+            yoyo: true
+        });
+        this.anims.create({
+            key: 'walk-up-left',
+            frames: this.anims.generateFrameNumbers('character', { start: 13, end: 15 }),
+            frameRate: framerate,
+            repeat: -1,
+            yoyo: true
+        });
     }
 }
