@@ -67,31 +67,33 @@ export class MainScene extends Phaser.Scene {
             let animationDown;
             let animationUp;
             let frameStand;
+            const playsAnimation = (animation: Phaser.Animations.Animation) => {
+                return seedling.anims.currentAnim == animation && seedling.anims.isPlaying;
+            }
+
             if (player.lastHorizontalDirection < 0) {
                 animationUp = seedling.anims.animationManager.get("walk-up-left");
                 animationDown = seedling.anims.animationManager.get("walk-left");
                 frameStand = 4;
             } else {
                 animationUp = seedling.anims.animationManager.get("walk-up-right");
-                animationDown = seedling.anims.animationManager.get("walf-right");
+                animationDown = seedling.anims.animationManager.get("walk-right");
                 frameStand = 0;
             }
 
             if (player.controls.arrows.up) {
-                if (seedling.anims.currentAnim != animationUp) {
+                if (!playsAnimation(animationUp)) {
                     seedling.anims.play(animationUp);
                 }
-            } else {
-                if (player.controls.arrows.right
+            } else if (player.controls.arrows.right
                         || player.controls.arrows.left
                         || player.controls.arrows.down) {
-                    if (seedling.anims.currentAnim != animationDown) {
+                    if (!playsAnimation(animationDown)) {
                         seedling.anims.play(animationDown);
                     }
-                } else {
-                    seedling.anims.stop();
-                    seedling.setFrame(frameStand);
-                }
+            } else {
+                seedling.anims.stop();
+                seedling.setFrame(frameStand);
             }
         }
 
