@@ -17,7 +17,7 @@ const mapGeneration = {
         },
         flowers: {
             row: 2,
-            tiles: 3,
+            tiles: 4,
             chance: 15
         }
     }
