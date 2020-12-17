@@ -64,33 +64,32 @@ export class MainScene extends Phaser.Scene {
         let color = 0;
 
         function updateAnimation(seedling: Phaser.GameObjects.Sprite, player: Player) {
-            let animationDown;
             let animationUp;
+            let animationSide;
+            let animationDown = seedling.anims.animationManager.get("walk-down");
             let frameStand;
-            const playsAnimation = (animation: Phaser.Animations.Animation) => {
-                return seedling.anims.currentAnim == animation && seedling.anims.isPlaying;
+            const playAnimationIfNotPlaying = (animation: Phaser.Animations.Animation) => {
+                if (!(seedling.anims.currentAnim == animation && seedling.anims.isPlaying)) {
+                    seedling.anims.play(animation);
+                }
             }
 
             if (player.lastHorizontalDirection < 0) {
                 animationUp = seedling.anims.animationManager.get("walk-up-left");
-                animationDown = seedling.anims.animationManager.get("walk-left");
+                animationSide = seedling.anims.animationManager.get("walk-left");
                 frameStand = 4;
             } else {
                 animationUp = seedling.anims.animationManager.get("walk-up-right");
-                animationDown = seedling.anims.animationManager.get("walk-right");
+                animationSide = seedling.anims.animationManager.get("walk-right");
                 frameStand = 0;
             }
 
             if (player.controls.arrows.up) {
-                if (!playsAnimation(animationUp)) {
-                    seedling.anims.play(animationUp);
-                }
-            } else if (player.controls.arrows.right
-                        || player.controls.arrows.left
-                        || player.controls.arrows.down) {
-                    if (!playsAnimation(animationDown)) {
-                        seedling.anims.play(animationDown);
-                    }
+                playAnimationIfNotPlaying(animationUp);
+            } else if (player.controls.arrows.right || player.controls.arrows.left) {
+                playAnimationIfNotPlaying(animationSide);
+            } else if (player.controls.arrows.down) {
+                playAnimationIfNotPlaying(animationDown);
             } else {
                 seedling.anims.stop();
                 seedling.setFrame(frameStand);
@@ -148,6 +147,13 @@ export class MainScene extends Phaser.Scene {
         this.anims.create({
             key: 'walk-up-left',
             frames: this.anims.generateFrameNumbers('character', { start: 13, end: 15 }),
+            frameRate: framerate,
+            repeat: -1,
+            yoyo: true
+        });
+        this.anims.create({
+            key: 'walk-down',
+            frames: this.anims.generateFrameNumbers('character', { start: 17, end: 19 }),
             frameRate: framerate,
             repeat: -1,
             yoyo: true
