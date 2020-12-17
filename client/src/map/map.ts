@@ -12,7 +12,7 @@ const mapGeneration = {
         },
         rocks: {
             row: 1,
-            tiles: 2,
+            tiles: 3,
             chance: 20
         },
         flowers: {
