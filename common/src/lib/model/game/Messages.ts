@@ -29,6 +29,14 @@ export type ControlUpdateMessage = {
   }
 }
 
+export type PlaceElementMessage = {
+  type: 'PlaceElement',
+  options: {
+    x: number,
+    y: number
+  }
+}
+
 export type CommunicationRangeUpdateMessage = {
   type: 'CommunicationRangeUpdate',
   options: {
@@ -39,6 +47,7 @@ export type CommunicationRangeUpdateMessage = {
 export type ClientMessageHandler = {
   JoinGame?: (msg: JoinGameMessage) => void,
   LeaveGame?: (msg: LeaveGameMessage) => void,
+  PlaceElement?: (msg: PlaceElementMessage) => void,
   ControlUpdate?: (msg: ControlUpdateMessage) => void
   CommunicationRangeUpdate?: (msg: CommunicationRangeUpdateMessage) => void
 }

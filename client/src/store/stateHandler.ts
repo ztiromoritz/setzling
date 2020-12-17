@@ -2,6 +2,7 @@ import {initializeRangeSlider} from "../controls/rangeSlider";
 import {initializeKeys} from "../controls/keys";
 import {applyPatches, enablePatches} from "immer";
 import {GameState, LoginMessage} from "../../../common/build/module";
+import {initializePlacement} from "../map/placeElement";
 
 enablePatches();
 
@@ -36,6 +37,7 @@ export class StateHandler {
             ws.send(JSON.stringify(msg));
 
             initializeRangeSlider(ws);
+            initializePlacement(ws);
             initializeKeys(ws);
         };
 

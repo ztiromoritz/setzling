@@ -5,7 +5,7 @@ import {
     Point,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage, ClientId
+    LoginMessage, ClientId, PlaceElementMessage
 } from 'setzling-common';
 import produce, { applyPatches } from "immer"
 
@@ -63,6 +63,7 @@ export class Game {
             const clientId = userMessage?.clientId
             const player = gameState.players
                 .find((player: Player) => player.clientId === clientId);
+            let message;
             switch (userMessage.message.type) {
                 case 'JoinGame':
                     if (!player) {
@@ -87,16 +88,21 @@ export class Game {
                     break;
                 case 'ControlUpdate':
                    //  console.log('ControlUpdate', player)
-                    const message = userMessage.message as ControlUpdateMessage;
+                    message = userMessage.message as ControlUpdateMessage;
                     if (player) {
                         player.controls = userMessage.message.options.controls;
                     }
                     break;
                 case 'CommunicationRangeUpdate':
                     if (player) {
-                        const message = userMessage.message as CommunicationRangeUpdateMessage;
+                        message = userMessage.message as CommunicationRangeUpdateMessage;
                         player.communicationRange = message.options.range;
                     }
+                    break;
+                case 'PlaceElement':
+                    message = userMessage.message as PlaceElementMessage;
+                    console.log("Placing fallback dummy element at " + message.options.x +","+message.options.y)
+                    // TODO: add placed element
                     break;
                 default:
                     console.error("Unexpected message type: "+userMessage.message.type)

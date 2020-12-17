@@ -2,7 +2,7 @@ import { GameHistory, SnapshotId } from "./GameDriver";
 import {
     ClientId,
     ClientMessageHandler,
-    ClientMessageType, CommunicationRangeUpdateMessage, ControlUpdateMessage,
+    ClientMessageType, CommunicationRangeUpdateMessage, ControlUpdateMessage, PlaceElementMessage,
     GameId, GameState,
     JoinGameMessage,
     LeaveGameMessage, LoginMessage, UpdateStateMessage
@@ -113,7 +113,7 @@ export class GameClientHandler implements GameClientNotifier {
     }
 
 
-    private createClientMessageHandler(client: GameClient, gameStore: GameStore): { LeaveGame(message: LeaveGameMessage): void; ControlUpdate(message: ControlUpdateMessage): void; JoinGame(message: JoinGameMessage): void; CommunicationRangeUpdate(message:CommunicationRangeUpdateMessage): void } {
+    private createClientMessageHandler(client: GameClient, gameStore: GameStore): { LeaveGame(message: LeaveGameMessage): void; ControlUpdate(message: ControlUpdateMessage): void; JoinGame(message: JoinGameMessage): void; CommunicationRangeUpdate(message:CommunicationRangeUpdateMessage): void; PlaceElement(message:PlaceElementMessage): void } {
         const dispatch = (message: any, gameId:GameId|null)=>{
             if (gameId) {
                 client.gameId;
@@ -148,6 +148,10 @@ export class GameClientHandler implements GameClientNotifier {
                 dispatch(message, gameId);
             },
             ControlUpdate(message: ControlUpdateMessage) {
+                const gameId = client.gameId;
+                dispatch(message, gameId);
+            },
+            PlaceElement(message: PlaceElementMessage) {
                 const gameId = client.gameId;
                 dispatch(message, gameId);
             },
