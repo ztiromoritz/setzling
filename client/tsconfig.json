@@ -10,6 +10,9 @@
       "es2017",
       "dom"
     ],
-    "typeRoots": [ "./src/types", "./node_modules/@types" ]
-  }
+    "typeRoots": [ "./src/types", "./node_modules/@types" ],
+
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules/**"]
 }

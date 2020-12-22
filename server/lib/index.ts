@@ -1,11 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { StoreController } from "./lib/controller/StoreController";
-import { InstanceController } from "./lib/controller/InstanceController";
+import { StoreController } from "./controller/StoreController";
+import { InstanceController } from "./controller/InstanceController";
 import WebSocket from 'ws';
-import { GameClientHandler } from "./lib/game/GameClientHandler";
-import { GameStore } from "./lib/game/GameStore";
-import { InstanceService } from "./lib/service/InstanceService";
+import { GameClientHandler } from "./game/GameClientHandler";
+import { GameStore } from "./game/GameStore";
+import { InstanceService } from "./service/InstanceService";
 import { stringReplace } from "string-replace-middleware";
 import { execSync } from "child_process";
 

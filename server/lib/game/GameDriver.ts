@@ -1,15 +1,16 @@
-import { Game } from "./Game";
+import {Game} from "./Game";
 import {produceWithPatches} from "immer";
 import {ClientId, GameId, GameState} from "setzling-common";
-import { Patch } from "immer/dist/types/types-external";
-import { hostname } from "os";
-import { GameClientNotifier } from "./GameClientNotifier";
+import {Patch} from "immer/dist/types/types-external";
+import {hostname} from "os";
+import {GameClientNotifier} from "./GameClientNotifier";
+import {MapGenerator} from "./world/MapGenerator";
 
 
 export type SnapshotId = string;
 
 export interface GameHistory {
-    snapshotId: 'A'| 'B'; // to notice if snapshot has changed
+    snapshotId: 'A' | 'B'; // to notice if snapshot has changed
     snapshot: GameState | null,
     patches: Patch[]
 }
@@ -23,38 +24,40 @@ export class GameDriver {
     private intervalId!: NodeJS.Timeout | null;
     private clientNotifier: GameClientNotifier | undefined;
 
-    constructor(game: Game, clientNotifier: GameClientNotifier | undefined){
+    constructor(game: Game, clientNotifier: GameClientNotifier | undefined) {
         this.game = game;
         this.state = this.initializeState();
         this.clientNotifier = clientNotifier;
     }
 
     private initializeState(): GameState {
+        const map = MapGenerator.generateRandomMap(300, 300);
         return {
             id: this.game.id,
             players: [],
-            jitsiSessions: []
+            jitsiSessions: [],
+            map
         }
     }
 
-    start(){
-        const history:GameHistory = {
+    start() {
+        const history: GameHistory = {
             snapshotId: 'A',
             snapshot: null,
-            patches : []
+            patches: []
         };
         let frame = 0;
         this.intervalId = setInterval(() => {
             const oldState: GameState = this.state;
-            const [newState, patches, inversePatches] = produceWithPatches(oldState,draft=>this.game.update(draft));
+            const [newState, patches, inversePatches] = produceWithPatches(oldState, draft => this.game.update(draft));
             // update history
             //console.log("newState", JSON.stringify(newState,null,2));
-            if(frame>FRAMES_PER_SNAPSHOT || !history.snapshot){
-                history.snapshotId = (history.snapshotId === 'A')?'B':'A';
+            if (frame > FRAMES_PER_SNAPSHOT || !history.snapshot) {
+                history.snapshotId = (history.snapshotId === 'A') ? 'B' : 'A';
                 history.snapshot = oldState;
                 history.patches = [...patches];
-                frame=0;
-            }else{
+                frame = 0;
+            } else {
                 history.patches.push(...patches);
             }
             this.clientNotifier?.notifyClients(this.game.id, history);
@@ -63,14 +66,14 @@ export class GameDriver {
         }, 1000 / FRAMES_PER_SECOND)
     }
 
-    stop(){
-        if(this.intervalId) {
+    stop() {
+        if (this.intervalId) {
             clearInterval(this.intervalId)
             this.intervalId = null;
         }
     }
 
-    sendUserMessage(message : any, clientId: ClientId) { // TODO Message Typing
+    sendUserMessage(message: any, clientId: ClientId) { // TODO Message Typing
         this.game.sendUserMessage(message, clientId);
     }
 

@@ -1,3 +1,5 @@
+import {Tilemap} from "./Tilemap";
+
 export type GameId = string;
 
 export type ClientId = string;
@@ -38,4 +40,5 @@ export interface GameState {
     id: GameId;
     jitsiSessions: JitsiCommunication[],
     players : Player[],
+    map : Tilemap
 }

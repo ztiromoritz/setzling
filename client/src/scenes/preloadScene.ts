@@ -14,17 +14,17 @@ export class PreloadScene extends Phaser.Scene {
         super(config);
     }
     preload(){
+        console.log("PreloadScene#preload")
         this.load.spritesheet('tree', './assets/tree.png', {frameHeight: 128, frameWidth: 64});
         this.load.spritesheet('setzling', './assets/setzling.png', {frameHeight: 16, frameWidth: 16} );
         this.load.spritesheet('character', './assets/characterAnimationSpritesheet.png', {frameHeight: 16, frameWidth: 16} );
         this.load.image('tileset', './assets/Tileset.png');
+        console.log("PreloadScene#preload")
     }
     async create(data: object){
         const toneResources = await loadTone();
         (this.game as CustomGame).toneResources = toneResources;
-
-
-
-        this.scene.start("MainScene");
+        console.log("PreloadScene#create");
+        this.scene.start("LoginScene");
     }
 }

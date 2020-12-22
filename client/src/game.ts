@@ -5,17 +5,20 @@ import {CustomGame} from "./types/customGame";
 import {PreloadScene} from "./scenes/preloadScene";
 import {appendJitsiIntegration} from "./communication/jitsi";
 import {debugHelper} from "./debug";
+import {LoginScene} from "./scenes/loginScene";
 
 const gameConfig: any /* GameConfig seems to be wrong */ = {
     type: Phaser.AUTO,
     width: 1200,
     height: 800,
     backgroundColor: '#000000',
-    scene: [PreloadScene, MainScene],
+    scene: [PreloadScene, LoginScene, MainScene],
     pixelArt: true,
     parent: 'grid-main'
 }
 
+
+console.log("hello")
 const game: CustomGame = new Phaser.Game(gameConfig) as CustomGame;
 
 game.stateHandler = new StateHandler();

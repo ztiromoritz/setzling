@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.ts"
+    "start": "nodemon lib/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "immer": "^7.0.14",
+    "perlin.js": "^1.0.0",
     "setzling-common": "file:../common/",
     "string-replace-middleware": "^1.0.2",
     "uuid": "^8.3.1",

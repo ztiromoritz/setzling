@@ -5,6 +5,7 @@ import {CustomGame} from "../types/customGame";
 import {Player} from "../../../common/build/module";
 import {createFloorLayer} from "../map/map";
 import {bindKeysToSounds} from "../sound/soundKey";
+import {ActiveState} from "../store/stateHandler";
 
 
 export class MainScene extends Phaser.Scene {
@@ -12,7 +13,11 @@ export class MainScene extends Phaser.Scene {
     private communicationRanges!: Phaser.GameObjects.Graphics;
     private tree!: Phaser.GameObjects.Sprite;
     private floorLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
+    private activeState!: ActiveState;
 
+    get key(){
+        return "MainScene";
+    }
     constructor(config: SettingsConfig = {}) {
         Object.assign(config, {key:'MainScene'});
         super(config);
@@ -22,7 +27,9 @@ export class MainScene extends Phaser.Scene {
     }
     create(data: object){
         console.log('Create MainScene');
-        this.floorLayer = createFloorLayer(this, 300,300);
+        this.activeState = data as ActiveState;
+        const floorLayerData = this.activeState.getGameState().map.layers[0];
+        this.floorLayer = createFloorLayer(this, floorLayerData);
         this.floorLayer.setScale(2,2);
         this.seedlings = this.preallocateSeedlings(20);
         this.communicationRanges = this.add.graphics({x:0,y:0});
@@ -30,24 +37,13 @@ export class MainScene extends Phaser.Scene {
         this.tree.setScale(4,4);
         bindKeysToSounds((this.game as CustomGame).toneResources);
 
-        /*
-        this.cameras.main.setSize(1200,800);
-        const stateHandler = (this.game as CustomGame).stateHandler;
-        const gameState = stateHandler.getGameState();
-        const localState = stateHandler.getLocalState();
-        const me = gameState.players.find((player) => player.clientId === localState.clientId);
-        if(me){
-            this.cameras.main.startFollow(me);
-        }*/
     }
 
     update(time:number, delta:number){
-        const stateHandler = (this.game as CustomGame).stateHandler;
-        if(!stateHandler.isStateDirty())
+        if(!this.activeState.isStateDirty())
             return;
-
-        const gameState = stateHandler.getGameState();
-        const localState = stateHandler.getLocalState();
+        const gameState = this.activeState.getGameState();
+        const localState = this.activeState.getLocalState();
 
         const me = gameState.players.find((player) => player.clientId === localState.clientId);
         if(me){
