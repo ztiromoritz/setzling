@@ -29,5 +29,11 @@ npm start
 
 ### client
 ```
-cd server; npm i
+cd client; npm i
+npm run build:vendor  // Once and only if you changed the depenencies. 
+                      // See webpack.vendor.confg.js
+
+npm run build:webpack // To rebuild the src (not including vendor dependencies)
+
+npm run watch         // For F5 development
 ```

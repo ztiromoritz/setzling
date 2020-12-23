@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "run-s build:webpack",
+    "build": "run-s build:vendor build:webpack",
     "build:rollup": "rollup -c",
     "build:webpack": "webpack --mode development --config webpack.config.js",
     "build:vendor": "webpack --mode development --config webpack.vendor.config.js",
     "test:unit": "nyc --silent ava",
     "watch": "run-p watch:webpack",
     "watch:main": "rollup -c -w",
-    "watch:webpack": "webpack --mode development -w"
+    "watch:webpack": "webpack --mode development --watch --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",

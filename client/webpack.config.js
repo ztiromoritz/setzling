@@ -1,21 +1,19 @@
 const webpack = require('webpack');
 const path = require('path');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     watchOptions: {aggregateTimeout: 300, poll: 1000, ignored: 'node_modules/**'},
     entry: path.resolve(__dirname, 'src', 'index.ts'),
-   // devtool: 'inline-source-map',
-    devtool: 'cheap-source-map',
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.ts$/,
                 include: path.resolve(__dirname, 'src'),
                 use: {
                     loader: 'ts-loader',
                     options: {
-                        transpileOnly: true
+                        //transpileOnly: true
                     },
                 },
                 exclude: /node_modules/,
@@ -29,11 +27,10 @@ module.exports = {
         extensions: ['.ts'],
     },
     plugins: [
-        new webpack.DllReferencePlugin({
+       new webpack.DllReferencePlugin({
             context: __dirname,
             manifest: path.join(__dirname, 'build', 'vendor-manifest.json')
         }),
-       // new ForkTsCheckerWebpackPlugin(),
     ],
     output: {
         filename: 'index.js',
