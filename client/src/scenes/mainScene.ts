@@ -63,7 +63,7 @@ export class MainScene extends Phaser.Scene {
             }
         })
 
-        
+
 
         const me = gameState.players.find((player) => player.clientId === localState.clientId);
         if(me){

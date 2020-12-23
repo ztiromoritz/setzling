@@ -18,7 +18,7 @@ const gameConfig: any /* GameConfig seems to be wrong */ = {
 }
 
 
-console.log("hello")
+console.log("helloss")
 const game: CustomGame = new Phaser.Game(gameConfig) as CustomGame;
 
 game.stateHandler = new StateHandler();

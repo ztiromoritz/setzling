@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "sourceMap": true,
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./build/bundle/",
