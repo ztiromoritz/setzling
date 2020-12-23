@@ -59,7 +59,7 @@ app.use('/client/',stringReplace({
 
 app.use('/client',express.static('../client/'))
 
-app.listen(serverPort, () => {
+app.listen(serverPort, '0.0.0.0', () => {
   console.log(`[server]: Server is running at http://localhost:${serverPort}/client`);
 });
 

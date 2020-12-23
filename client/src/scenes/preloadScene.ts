@@ -22,6 +22,7 @@ export class PreloadScene extends Phaser.Scene {
         console.log("PreloadScene#preload")
     }
     async create(data: object){
+
         const toneResources = await loadTone();
         (this.game as CustomGame).toneResources = toneResources;
         console.log("PreloadScene#create");
