@@ -3,6 +3,7 @@ import {ToneResources} from "./assets";
 
 export function bindKeysToSounds(toneResources: ToneResources) {
     document.addEventListener("keydown", (event: KeyboardEvent) => {
+        /*
         if (event.key === 'q') {
             toneResources.samplers?.guitarMajor.triggerAttackRelease(["C4"], 4);
             return;
@@ -27,5 +28,6 @@ export function bindKeysToSounds(toneResources: ToneResources) {
             toneResources.samplers?.guitarMinor.triggerAttackRelease(["A4"], 4);
             return;
         }
+        */
     });
 }

@@ -37,7 +37,7 @@ export function initializeKeys(ws: WebSocket){
             arrows.down = true;
         } else if (e.code === "ArrowLeft" || e.code == "KeyA") {
             arrows.left = true;
-        } else if (e.code === "ArrowRight" || e.code == "KeyA") {
+        } else if (e.code === "ArrowRight" || e.code == "KeyD") {
             arrows.right = true;
         }
         sendControlUpdate();
