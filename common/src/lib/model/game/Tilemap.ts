@@ -1,5 +1,7 @@
+
+
 export interface Tilemap {
-  objects : []
+  objects : MapObject[]
   layers: MapLayer[],
 }
 
@@ -21,5 +23,22 @@ export interface Tile {
   id: number,
   properties: {
     [key: string]: string | number | boolean
+  }
+}
+
+export type TemplateId = string;
+export type MapObjectId = string;
+
+export interface Template {
+    id: TemplateId;
+    image: string;
+}
+
+export interface MapObject {
+  id: MapObjectId,
+  template: TemplateId,
+  position : {
+    // pixel coords, not grid index
+    x: number, y: number
   }
 }

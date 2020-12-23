@@ -5,8 +5,10 @@ import {
     Point,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage, ClientId, PlaceElementMessage
+    LoginMessage, ClientId, PlaceElementMessage, MapObject
 } from 'setzling-common';
+
+import {v4 as uuidv4} from 'uuid';
 import produce, { applyPatches } from "immer"
 
 // version 6
@@ -102,7 +104,13 @@ export class Game {
                 case 'PlaceElement':
                     message = userMessage.message as PlaceElementMessage;
                     console.log("Placing fallback dummy element at " + message.options.x +","+message.options.y)
-                    // TODO: add placed element
+                    if(player){
+                        const {x,y} = player.position;
+                        const id = uuidv4();
+                        const testObject : MapObject = {template: "TestTemplate", position: {x,y}, id};
+                        gameState.map.objects.push(testObject);
+                    }
+
                     break;
                 default:
                     console.error("Unexpected message type: "+userMessage.message.type)

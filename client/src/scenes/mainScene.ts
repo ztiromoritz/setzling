@@ -6,6 +6,7 @@ import {Player} from "../../../common/build/module";
 import {createFloorLayer} from "../map/map";
 import {bindKeysToSounds} from "../sound/soundKey";
 import {ActiveState} from "../store/stateHandler";
+import {MapObject, MapObjectId} from "setzling-common";
 
 
 export class MainScene extends Phaser.Scene {
@@ -14,6 +15,9 @@ export class MainScene extends Phaser.Scene {
     private tree!: Phaser.GameObjects.Sprite;
     private floorLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
     private activeState!: ActiveState;
+    private mapObjects!: Phaser.GameObjects.Group;
+    private mapObjectsSet!: Set<MapObjectId>;
+
 
     get key(){
         return "MainScene";
@@ -35,6 +39,9 @@ export class MainScene extends Phaser.Scene {
         this.communicationRanges = this.add.graphics({x:0,y:0});
         this.tree = this.add.sprite(600,400,'tree',0);
         this.tree.setScale(4,4);
+
+        this.mapObjectsSet = new Set<MapObjectId>();
+        this.mapObjects = this.add.group();
         bindKeysToSounds((this.game as CustomGame).toneResources);
 
     }
@@ -44,6 +51,19 @@ export class MainScene extends Phaser.Scene {
             return;
         const gameState = this.activeState.getGameState();
         const localState = this.activeState.getLocalState();
+
+
+
+        gameState.map.objects.forEach((mapObject)=>{
+            if(!this.mapObjectsSet.has(mapObject.id)){
+                const {x,y}= mapObject.position;
+                const objectSprite = this.add.sprite(x,y,'tree');
+                this.mapObjects.add(objectSprite);
+                this.mapObjectsSet.add(mapObject.id);
+            }
+        })
+
+        
 
         const me = gameState.players.find((player) => player.clientId === localState.clientId);
         if(me){
