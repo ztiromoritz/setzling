@@ -9,8 +9,8 @@ import {LoginScene} from "./scenes/loginScene";
 
 const gameConfig: any /* GameConfig seems to be wrong */ = {
     type: Phaser.AUTO,
-    width: 1200,
-    height: 800,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: '#000000',
     scene: [PreloadScene, LoginScene, MainScene],
     pixelArt: true,

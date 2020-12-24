@@ -13,10 +13,11 @@ const gitHash = execSync('git rev-parse HEAD').toString().trim();
 
 
 dotenv.config()
-const {SERVER_PORT, WS_PORT, WS_BASE_URL} = process.env;
+const {SERVER_PORT, WS_PORT, WS_BASE_URL, INSTANCE_NAME} = process.env;
 const serverPort = Number.parseInt(SERVER_PORT || "7777");
 const wsPort = Number.parseInt(WS_PORT || "7778");
-const wsBaseUrl = WS_BASE_URL || `ws://localhost:${wsPort}`
+const wsBaseUrl = WS_BASE_URL || `ws://localhost:${wsPort}`;
+const instanceName = INSTANCE_NAME || 'not-set';
 
 
 
@@ -53,7 +54,8 @@ app.use('/api/instances/', new InstanceController(instanceService).getRouter())
 // Static files
 app.use('/client/',stringReplace({
   '##wsBaseUrl##': wsBaseUrl,
-  '##gitHash##': gitHash
+  '##gitHash##': gitHash,
+  '##instanceName##': instanceName
 }));
 
 
