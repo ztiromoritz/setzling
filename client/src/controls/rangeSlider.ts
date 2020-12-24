@@ -12,29 +12,21 @@ export function initializeRangeSlider(ws: WebSocket){
 
     // handle range slider
     let rangeSlider = document.querySelector("#communication_range_slider");
+    const min = 30;
+    const max = 300;
     let communicationRange = 50;
-    const onUpdateRangeSlider = (rangeSlider: any, rangeLabel: any) => {
-        let newValue;
-        if (rangeSlider != null) {
-            newValue = rangeSlider.value;
+    let startIncrementHoldTimeout:number;
+    let incrementInterval: number;
+
+
+    document.addEventListener('keydown', (e) => {
+        if(e.key === '+'){
+            communicationRange = Math.min(communicationRange+1, max);
+            sendCommunicationRangeUpdate(communicationRange);
+        } else if(e.key === '-'){
+            communicationRange = Math.max(communicationRange-1, min);
+            sendCommunicationRangeUpdate(communicationRange);
         }
-        if (rangeLabel != null) {
-            rangeLabel.innerHTML = "Range: " + newValue;
-        }
-        communicationRange = newValue;
-        sendCommunicationRangeUpdate(newValue)
-        rangeSlider.blur(); // lose focus after changing value
-    };
-    if (rangeSlider != null) {
-        let rangeLabel = document.querySelector("#communication_range_label");
-        rangeSlider.addEventListener("input", () => {
-            onUpdateRangeSlider(rangeSlider, rangeLabel)
-        });
-        rangeSlider.addEventListener("change", () => {
-            onUpdateRangeSlider(rangeSlider, rangeLabel)
-        }); // add onInput and onChange, as Firefox & Chrome trigger on input, while IE10 on change
-        console.log("... initialized slider!");
-    } else {
-        console.error("Range slider cannot be found!");
-    }
+    })
+
 }

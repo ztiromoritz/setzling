@@ -1,12 +1,13 @@
 import Phaser from "phaser";
 import SettingsConfig = Phaser.Types.Scenes.SettingsConfig;
-import {debugHelper} from "../debug";
-import {CustomGame} from "../types/customGame";
-import {Player} from "../../../common/build/module";
-import {createFloorLayer} from "../map/map";
-import {bindKeysToSounds} from "../sound/soundKey";
-import {ActiveState} from "../store/stateHandler";
-import {MapObject, MapObjectId} from "setzling-common";
+import { debugHelper } from "../debug";
+import { CustomGame } from "../types/customGame";
+import { Player } from "../../../common/build/module";
+import { createFloorLayer } from "../map/map";
+import { bindKeysToSounds } from "../sound/soundKey";
+import { Connection } from "../store/connectionHandler";
+import { MapObject, MapObjectId } from "setzling-common";
+import TileMarker from "../gameobjects/tileMarker";
 
 
 export class MainScene extends Phaser.Scene {
@@ -14,50 +15,55 @@ export class MainScene extends Phaser.Scene {
     private communicationRanges!: Phaser.GameObjects.Graphics;
     private tree!: Phaser.GameObjects.Sprite;
     private floorLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
-    private activeState!: ActiveState;
+    private connection!: Connection;
     private mapObjects!: Phaser.GameObjects.Group;
     private mapObjectsSet!: Set<MapObjectId>;
+    tileMarker!: TileMarker;
 
 
-    get key(){
+    get key() {
         return "MainScene";
     }
     constructor(config: SettingsConfig = {}) {
-        Object.assign(config, {key:'MainScene'});
+        Object.assign(config, { key: 'MainScene' });
         super(config);
     }
-    init(data:object){
+    init(data: object) {
 
     }
-    create(data: object){
+    create(data: object) {
         console.log('Create MainScene');
-        this.activeState = data as ActiveState;
-        const floorLayerData = this.activeState.getGameState().map.layers[0];
+        this.connection = data as Connection;
+        const floorLayerData = this.connection.getGameState().map.layers[0];
         this.floorLayer = createFloorLayer(this, floorLayerData);
-        this.floorLayer.setScale(2,2);
+        this.floorLayer.setScale(1, 1);
         this.seedlings = this.preallocateSeedlings(20);
-        this.communicationRanges = this.add.graphics({x:0,y:0});
-        this.tree = this.add.sprite(600,400,'tree',0);
-        this.tree.setScale(4,4);
+        this.communicationRanges = this.add.graphics({ x: 0, y: 0 });
+        this.tree = this.add.sprite(600, 400, 'tree', 0);
+        this.tree.setScale(1, 1);
+
+        this.tileMarker = new TileMarker(this, 0, 0);
+        this.add.existing(this.tileMarker);
 
         this.mapObjectsSet = new Set<MapObjectId>();
         this.mapObjects = this.add.group();
+        
+        
         bindKeysToSounds((this.game as CustomGame).toneResources);
-
     }
 
-    update(time:number, delta:number){
-        if(!this.activeState.isStateDirty())
+    update(time: number, delta: number) {
+        if (!this.connection.isStateDirty())
             return;
-        const gameState = this.activeState.getGameState();
-        const localState = this.activeState.getLocalState();
+        const gameState = this.connection.getGameState();
+        const localState = this.connection.getLocalState();
 
 
 
-        gameState.map.objects.forEach((mapObject)=>{
-            if(!this.mapObjectsSet.has(mapObject.id)){
-                const {x,y}= mapObject.position;
-                const objectSprite = this.add.sprite(x,y,'tree');
+        gameState.map.objects.forEach((mapObject) => {
+            if (!this.mapObjectsSet.has(mapObject.id)) {
+                const { x, y } = mapObject.position;
+                const objectSprite = this.add.sprite(x, y, 'tree');
                 this.mapObjects.add(objectSprite);
                 this.mapObjectsSet.add(mapObject.id);
             }
@@ -66,9 +72,9 @@ export class MainScene extends Phaser.Scene {
 
 
         const me = gameState.players.find((player) => player.clientId === localState.clientId);
-        if(me){
-            this.cameras.main.scrollX = me.position.x - 600;
-            this.cameras.main.scrollY = me.position.y - 400;
+        if (me) {
+            this.cameras.main.scrollX = me.position.x - this.game.scale.width / 2;
+            this.cameras.main.scrollY = me.position.y - this.game.scale.height / 2
         }
 
 
@@ -129,8 +135,8 @@ export class MainScene extends Phaser.Scene {
         for (let i = 0; i < amount; i++) {
             const seedling = new Phaser.GameObjects.Sprite(this, 0, 0, 'character', 0);
             seedling.visible = false;
-            seedling.setOrigin(0.5,0.5);
-            seedling.setScale(3,3);
+            seedling.setOrigin(0.5, 0.5);
+            seedling.setScale(1, 1);
             seedlings.push(seedling);
             this.add.existing(seedling);
         }

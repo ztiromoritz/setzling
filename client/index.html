@@ -1,41 +1,49 @@
 <!doctype html>
 <html lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Setzling</title>
-    <link href="./style.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="./assets/setzling.png" sizes="16x16">
-    <!--
+<meta charset="UTF-8">
+<meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Setzling</title>
+<link href="./style.css" rel="stylesheet">
+
+<link href="./styles/TuiCss/tuicss.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="./assets/setzling.png" sizes="16x16">
+<!--
     <script src="https://unpkg.com/immer"></script>
     <script src="https://unpkg.com/immer@7.0.14/dist/immer.umd.development.js"></script>
     -->
 </head>
+
 <body style="position: relative;">
-<script>
-window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
-console.log("githash ", "##gitHash##");
-console.log("instanceName ", "##instanceName##");
-</script>
-<script src="./build/bundle/vendor.bundle.js"></script>
-<script src="./build/bundle/index.js"></script>
-<div class="performance-debug"></div>
-<div class="render-debug"></div>
-<div class="grid-container">
-    <!--div id="grid-header"></div-->
-    <div id="grid-menu">
-        <div id="inventory">
-            <button id="place_button">Place test item</button>
+    <script>
+        window.WEB_SOCKET_BASE_URL = "##wsBaseUrl##";
+        console.log("githash ", "##gitHash##");
+        console.log("instanceName ", "##instanceName##");
+    </script>
+    
+    <div class="performance-debug"></div>
+    <div class="render-debug"></div>
+    <div id="phaser"></div>
+    <div id="ui"></div>
+
+
+    <!--TODO: remove the old grid or use it in ui-->
+    <div class="grid-container" style="display: none;">
+        <!--div id="grid-header"></div-->
+        <div id="grid-menu">
+            <div id="inventory">
+            </div>
         </div>
+        <div id="grid-main"></div>
+        <div id="grid-right">
+            <div id="meet" class="sidebar-element"></div>
+        </div>
+        <div id="grid-footer"></div>
     </div>
-    <div id="grid-main"></div>
-    <div id="grid-right">
-        <div id="meet" class="sidebar-element"></div>
-        <input type="range" min="30" max="300" value="50" id="communication_range_slider">
-        <label for="communication_range_slider" id="communication_range_label">Range: 100</label>
-    </div>
-    <div id="grid-footer"></div>
-</div>
+
+    <script src="./build/bundle/vendor.bundle.js"></script>
+    <script src="./build/bundle/index.js"></script>
 </body>
+
 </html>

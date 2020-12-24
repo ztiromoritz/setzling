@@ -18,6 +18,17 @@ module.exports = {
                 },
                 exclude: /node_modules/,
             },
+            {
+                test: /\.html$/i,
+                use: [
+                  {
+                    loader: 'raw-loader',
+                    options: {
+                      esModule: false,
+                    },
+                  },
+                ],
+              }
         ],
     },
     watchOptions : {

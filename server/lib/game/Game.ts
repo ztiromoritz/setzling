@@ -105,7 +105,7 @@ export class Game {
                     message = userMessage.message as PlaceElementMessage;
                     console.log("Placing fallback dummy element at " + message.options.x +","+message.options.y)
                     if(player){
-                        const {x,y} = player.position;
+                        const {x,y} = message.options;
                         const id = uuidv4();
                         const testObject : MapObject = {template: "TestTemplate", position: {x,y}, id};
                         gameState.map.objects.push(testObject);
@@ -120,7 +120,7 @@ export class Game {
     }
 
     private movement(gameState: GameState) {
-        let speed = 3;
+        let speed = 1;
         gameState.players.forEach((player) => {
             let dx = 0;
             let dy = 0;

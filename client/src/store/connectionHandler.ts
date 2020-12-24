@@ -1,8 +1,7 @@
 import {initializeRangeSlider} from "../controls/rangeSlider";
-import {initializeKeys} from "../controls/keys";
+import {initializeServerKeys} from "../controls/keys";
 import {applyPatches, enablePatches} from "immer";
 import {GameState, LoginMessage} from "../../../common/build/module";
-import {initializePlacement} from "../map/placeElement";
 
 enablePatches();
 
@@ -11,13 +10,14 @@ export type LocalState = {
     clientId: string | undefined
 }
 
-export interface ActiveState {
+export interface Connection {
     isStateDirty():boolean
     getLocalState(): LocalState
     getGameState(): GameState
+    getWebSocket(): WebSocket
 }
 
-export class StateHandler {
+export class ConnectionHandler {
     private state!: GameState;
     private localState: LocalState ;
     private stateIsDirty: boolean;
@@ -36,11 +36,11 @@ export class StateHandler {
         this.localState = {clientId: undefined};
     }
 
-    connect() : Promise<ActiveState>{
+    connect() : Promise<Connection>{
         if(this.status.INITIAL){
             return Promise.reject('connect can only be called once');
         }
-        return new Promise<ActiveState>((resolve, reject)=>{
+        return new Promise<Connection>((resolve, reject)=>{
             this.status.INITIAL = true;
             // timeout
             setTimeout(()=>{
@@ -63,8 +63,7 @@ export class StateHandler {
                 this.status.JOIN_REQUEST_SEND = true;
 
                 initializeRangeSlider(ws);
-                initializePlacement(ws);
-                initializeKeys(ws);
+                initializeServerKeys(ws);
             };
 
             ws.onmessage = (() => {
@@ -88,6 +87,9 @@ export class StateHandler {
                                         },
                                         getGameState(): GameState {
                                             return that.state;
+                                        },
+                                        getWebSocket(): WebSocket {
+                                            return ws;
                                         }
                                     })
                                 }

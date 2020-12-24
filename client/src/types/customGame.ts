@@ -1,9 +1,11 @@
 import Phaser from "phaser";
-import {StateHandler} from "../store/stateHandler";
+import {ConnectionHandler} from "../store/connectionHandler";
 import {ToneResources} from "../sound/assets";
+import { Commands } from "../commands/commands";
 
 export interface CustomGame extends Phaser.Game {
-    stateHandler: StateHandler,
+    commands : Commands,
+    connectionHandler: ConnectionHandler,
     customData: { [id: string]: any },
     toneResources: ToneResources
 }

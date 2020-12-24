@@ -1,4 +1,4 @@
-export function initializeKeys(ws: WebSocket){
+export function initializeServerKeys(ws: WebSocket) {
     let arrows = {
         up: false,
         down: false,
@@ -10,7 +10,7 @@ export function initializeKeys(ws: WebSocket){
         const msg = {
             type: 'ControlUpdate',
             options: {
-                controls: {arrows}
+                controls: { arrows }
             }
         }
         ws.send(JSON.stringify(msg));
@@ -18,7 +18,14 @@ export function initializeKeys(ws: WebSocket){
 
 
     document.addEventListener('keyup', (e) => {
-        if (e.code === "ArrowUp" || e.code == "KeyW" ) {
+        /*switch (e.code) {
+            case "ArrowUp":
+            case "KeyW":
+                arrows.up = false;
+                break;
+            case "ArrowDown"
+        }*/
+        if (e.code === "ArrowUp" || e.code == "KeyW") {
             arrows.up = false;
         } else if (e.code === "ArrowDown" || e.code == "KeyS") {
             arrows.down = false;
@@ -31,9 +38,9 @@ export function initializeKeys(ws: WebSocket){
     })
 
     document.addEventListener('keydown', (e) => {
-        if (e.code === "ArrowUp"  || e.code == "KeyW" ) {
+        if (e.code === "ArrowUp" || e.code == "KeyW") {
             arrows.up = true;
-        } else if (e.code === "ArrowDown" || e.code == "KeyS" ) {
+        } else if (e.code === "ArrowDown" || e.code == "KeyS") {
             arrows.down = true;
         } else if (e.code === "ArrowLeft" || e.code == "KeyA") {
             arrows.left = true;
@@ -43,3 +50,4 @@ export function initializeKeys(ws: WebSocket){
         sendControlUpdate();
     })
 }
+
