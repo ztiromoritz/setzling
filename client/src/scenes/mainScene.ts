@@ -7,7 +7,7 @@ import { createFloorLayer } from "../map/map";
 import { bindKeysToSounds } from "../sound/soundKey";
 import { Connection } from "../store/connectionHandler";
 import { MapObject, MapObjectId } from "setzling-common";
-import TileMarker from "../gameobjects/tileMarker";
+import TileMarker from "../ui-sprites/tileMarker";
 
 
 export class MainScene extends Phaser.Scene {
