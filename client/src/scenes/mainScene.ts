@@ -57,13 +57,22 @@ export class MainScene extends Phaser.Scene {
             return;
         const gameState = this.connection.getGameState();
         const localState = this.connection.getLocalState();
-
+        const playAnimationIfNotPlaying = (animation: Phaser.Animations.Animation, sprite: Phaser.GameObjects.Sprite) => {
+            if (!(sprite.anims.currentAnim == animation && sprite.anims.isPlaying)) {
+                sprite.anims.play(animation);
+            }
+        }
 
 
         gameState.map.objects.forEach((mapObject) => {
             if (!this.mapObjectsSet.has(mapObject.id)) {
                 const { x, y } = mapObject.position;
-                const objectSprite = this.add.sprite(x, y, 'tree');
+                const objectSprite = this.add.sprite(x, y, 'objects', 0);
+                objectSprite.setOrigin(0,0);
+                const fireAnmation = objectSprite.anims.animationManager.get("fire");
+                
+                playAnimationIfNotPlaying(fireAnmation, objectSprite);
+                objectSprite.anims.animationManager.add
                 this.mapObjects.add(objectSprite);
                 this.mapObjectsSet.add(mapObject.id);
             }
@@ -90,11 +99,7 @@ export class MainScene extends Phaser.Scene {
             let animationSide;
             let animationDown = seedling.anims.animationManager.get("walk-down");
             let frameStand;
-            const playAnimationIfNotPlaying = (animation: Phaser.Animations.Animation) => {
-                if (!(seedling.anims.currentAnim == animation && seedling.anims.isPlaying)) {
-                    seedling.anims.play(animation);
-                }
-            }
+            
 
             if (player.lastHorizontalDirection < 0) {
                 animationUp = seedling.anims.animationManager.get("walk-up-left");
@@ -107,11 +112,11 @@ export class MainScene extends Phaser.Scene {
             }
 
             if (player.controls.arrows.up) {
-                playAnimationIfNotPlaying(animationUp);
+                playAnimationIfNotPlaying(animationUp,seedling);
             } else if (player.controls.arrows.right || player.controls.arrows.left) {
-                playAnimationIfNotPlaying(animationSide);
+                playAnimationIfNotPlaying(animationSide, seedling);
             } else if (player.controls.arrows.down) {
-                playAnimationIfNotPlaying(animationDown);
+                playAnimationIfNotPlaying(animationDown, seedling);
             } else {
                 seedling.anims.stop();
                 seedling.setFrame(frameStand);
@@ -180,5 +185,13 @@ export class MainScene extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+
+
+        this.anims.create({
+            key: 'fire',
+            frames: this.anims.generateFrameNumbers('objects', {start: 0, end: 5}),
+            frameRate: 4,
+            repeat: -1
+        })
     }
 }
