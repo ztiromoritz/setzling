@@ -35,7 +35,7 @@ export class MainScene extends Phaser.Scene {
         console.log('Create MainScene');
         this.connection = data as Connection;
 
-        initializeUi(this.connection);
+        
 
         const floorLayerData = this.connection.getGameState().map.layers[0];
         this.floorLayer = createFloorLayer(this, floorLayerData);

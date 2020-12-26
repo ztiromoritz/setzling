@@ -27,27 +27,34 @@ export function initializeServerKeys(ws: WebSocket) {
         }*/
         if (e.code === "ArrowUp" || e.code == "KeyW") {
             arrows.up = false;
+            sendControlUpdate();
         } else if (e.code === "ArrowDown" || e.code == "KeyS") {
             arrows.down = false;
+            sendControlUpdate();
         } else if (e.code === "ArrowLeft" || e.code == "KeyA") {
             arrows.left = false;
+            sendControlUpdate();
         } else if (e.code === "ArrowRight" || e.code == "KeyD") {
             arrows.right = false;
+            sendControlUpdate();
         }
-        sendControlUpdate();
+        
     })
 
     document.addEventListener('keydown', (e) => {
         if (e.code === "ArrowUp" || e.code == "KeyW") {
             arrows.up = true;
+            sendControlUpdate();
         } else if (e.code === "ArrowDown" || e.code == "KeyS") {
             arrows.down = true;
+            sendControlUpdate();
         } else if (e.code === "ArrowLeft" || e.code == "KeyA") {
             arrows.left = true;
+            sendControlUpdate();
         } else if (e.code === "ArrowRight" || e.code == "KeyD") {
             arrows.right = true;
+            sendControlUpdate();
         }
-        sendControlUpdate();
     })
 }
 

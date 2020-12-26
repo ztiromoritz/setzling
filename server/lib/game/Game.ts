@@ -5,7 +5,7 @@ import {
     Player,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage, PlaceElementMessage, MapObject, ClientId
+    LoginMessage, PlaceElementMessage, MapObject, ClientId, SelectInventoryItemMessage
 } from 'setzling-common';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -84,9 +84,9 @@ export class Game {
                                         amount: 1,
                                         bluprint: true,
                                         itemId: 'fire',
-                                        name:'fire',
-                                        itemInstanceId : 'asdfasdkhasdf',
-                                        state : {
+                                        name: 'fire',
+                                        itemInstanceId: 'asdfasdkhasdf',
+                                        state: {
                                             burning: false
                                         }
                                     },
@@ -94,14 +94,14 @@ export class Game {
                                         amount: 1,
                                         bluprint: true,
                                         itemId: 'ice',
-                                        name:'icecream',
-                                        itemInstanceId : 'jkfadskljdfsjkl',
-                                        state : {
+                                        name: 'icecream',
+                                        itemInstanceId: 'jkfadskljdfsjkl',
+                                        state: {
                                             burning: false
                                         }
                                     }
                                 ],
-                                bag : []
+                                bag: []
                             }
                         };
                         gameState.players.push(newPlayer)
@@ -138,6 +138,13 @@ export class Game {
                     }
 
                     break;
+
+                case 'SelectInventoryItem':
+                    message = userMessage.message as SelectInventoryItemMessage;
+                    if(player && message.index >=0 && message.index <= 9){
+                        player.items.selected = message.index;
+                    }
+                    break;
                 default:
                     console.error("Unexpected message type: " + userMessage.message.type)
                     break;
@@ -172,6 +179,7 @@ export class Game {
 
 
     public sendUserMessage(message: any, clientId: ClientId) {
+        console.log("message xxx", message);
         this.messageQueue.push({ message, clientId })
     }
 

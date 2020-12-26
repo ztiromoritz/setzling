@@ -1,5 +1,5 @@
 import { Patch } from "immer";
-import {GameId, GameState} from "./GameState";
+import { GameId, GameState } from "./GameState";
 import { ClientId, Controls } from "./Player";
 
 // Client Messages
@@ -25,7 +25,7 @@ export type LeaveGameMessage = {
 export type ControlUpdateMessage = {
   type: 'ControlUpdate',
   options: {
-    controls : Controls
+    controls: Controls
   }
 }
 
@@ -37,10 +37,15 @@ export type PlaceElementMessage = {
   }
 }
 
+export type SelectInventoryItemMessage = {
+  type: 'SelectInventoryItem',
+  index: number
+}
+
 export type CommunicationRangeUpdateMessage = {
   type: 'CommunicationRangeUpdate',
   options: {
-    range : number
+    range: number
   }
 }
 
@@ -50,6 +55,7 @@ export type ClientMessageHandler = {
   PlaceElement?: (msg: PlaceElementMessage) => void,
   ControlUpdate?: (msg: ControlUpdateMessage) => void
   CommunicationRangeUpdate?: (msg: CommunicationRangeUpdateMessage) => void
+  SelectInventoryItem?: (message: SelectInventoryItemMessage) => void
 }
 
 

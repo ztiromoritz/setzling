@@ -5,7 +5,7 @@ import {
     ClientMessageType, CommunicationRangeUpdateMessage, ControlUpdateMessage, PlaceElementMessage,
     GameId, GameState,
     JoinGameMessage,
-    LeaveGameMessage, LoginMessage, UpdateStateMessage
+    LeaveGameMessage, LoginMessage, UpdateStateMessage, SelectInventoryItemMessage
 } from "setzling-common";
 import { Server } from "ws";
 import * as WebSocket from 'ws';
@@ -113,7 +113,7 @@ export class GameClientHandler implements GameClientNotifier {
     }
 
 
-    private createClientMessageHandler(client: GameClient, gameStore: GameStore): { LeaveGame(message: LeaveGameMessage): void; ControlUpdate(message: ControlUpdateMessage): void; JoinGame(message: JoinGameMessage): void; CommunicationRangeUpdate(message:CommunicationRangeUpdateMessage): void; PlaceElement(message:PlaceElementMessage): void } {
+    private createClientMessageHandler(client: GameClient, gameStore: GameStore): ClientMessageHandler {
         const dispatch = (message: any, gameId:GameId|null)=>{
             if (gameId) {
                 client.gameId;
@@ -156,6 +156,10 @@ export class GameClientHandler implements GameClientNotifier {
                 dispatch(message, gameId);
             },
             CommunicationRangeUpdate(message: CommunicationRangeUpdateMessage) {
+                const gameId = client.gameId;
+                dispatch(message, gameId);
+            },
+            SelectInventoryItem(message: SelectInventoryItemMessage){
                 const gameId = client.gameId;
                 dispatch(message, gameId);
             }
