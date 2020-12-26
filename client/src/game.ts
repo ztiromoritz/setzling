@@ -6,7 +6,9 @@ import { PreloadScene } from "./scenes/preloadScene";
 import { appendJitsiIntegration } from "./communication/jitsi";
 import { debugHelper } from "./debug";
 import { LoginScene } from "./scenes/loginScene";
-import "./ui/ui";
+
+
+
 
 const zoom = 3;
 const gameConfig: any /* GameConfig seems to be wrong */ = {

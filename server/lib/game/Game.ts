@@ -1,14 +1,14 @@
 import {
     GameState,
     GameId,
-    Player,
     Point,
+    Player,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage, ClientId, PlaceElementMessage, MapObject
+    LoginMessage, PlaceElementMessage, MapObject, ClientId
 } from 'setzling-common';
 
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import produce, { applyPatches } from "immer"
 
 // version 6
@@ -61,7 +61,7 @@ export class Game {
 
         let userMessage: UserMessage | undefined;
         while ((userMessage = this.messageQueue.shift()) !== undefined) {
-            console.log("userMessage",JSON.stringify(userMessage,null,2))
+            console.log("userMessage", JSON.stringify(userMessage, null, 2))
             const clientId = userMessage?.clientId
             const player = gameState.players
                 .find((player: Player) => player.clientId === clientId);
@@ -69,16 +69,42 @@ export class Game {
             switch (userMessage.message.type) {
                 case 'JoinGame':
                     if (!player) {
-                    console.log("push")
-                        gameState.players.push({
+                        const newPlayer: Player = {
                             clientId,
                             position: getRandomPoint(),
                             controls: {
                                 arrows: { up: false, down: false, left: false, right: false }
                             },
                             communicationRange: 50,
-                            lastHorizontalDirection: 0
-                        })
+                            lastHorizontalDirection: 0,
+                            items: {
+                                selected: 0,
+                                inventory: [
+                                    {
+                                        amount: 1,
+                                        bluprint: true,
+                                        itemId: 'fire',
+                                        name:'fire',
+                                        itemInstanceId : 'asdfasdkhasdf',
+                                        state : {
+                                            burning: false
+                                        }
+                                    },
+                                    {
+                                        amount: 1,
+                                        bluprint: true,
+                                        itemId: 'ice',
+                                        name:'icecream',
+                                        itemInstanceId : 'jkfadskljdfsjkl',
+                                        state : {
+                                            burning: false
+                                        }
+                                    }
+                                ],
+                                bag : []
+                            }
+                        };
+                        gameState.players.push(newPlayer)
                     }
                     break;
                 case 'LeaveGame':
@@ -89,7 +115,7 @@ export class Game {
                     }
                     break;
                 case 'ControlUpdate':
-                   //  console.log('ControlUpdate', player)
+                    //  console.log('ControlUpdate', player)
                     message = userMessage.message as ControlUpdateMessage;
                     if (player) {
                         player.controls = userMessage.message.options.controls;
@@ -103,17 +129,17 @@ export class Game {
                     break;
                 case 'PlaceElement':
                     message = userMessage.message as PlaceElementMessage;
-                    console.log("Placing fallback dummy element at " + message.options.x +","+message.options.y)
-                    if(player){
-                        const {x,y} = message.options;
+                    console.log("Placing fallback dummy element at " + message.options.x + "," + message.options.y)
+                    if (player) {
+                        const { x, y } = message.options;
                         const id = uuidv4();
-                        const testObject : MapObject = {template: "TestTemplate", position: {x,y}, id};
+                        const testObject: MapObject = { template: "TestTemplate", position: { x, y }, id };
                         gameState.map.objects.push(testObject);
                     }
 
                     break;
                 default:
-                    console.error("Unexpected message type: "+userMessage.message.type)
+                    console.error("Unexpected message type: " + userMessage.message.type)
                     break;
             }
         }

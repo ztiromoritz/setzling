@@ -1,7 +1,8 @@
 import {initializeRangeSlider} from "../controls/rangeSlider";
 import {initializeServerKeys} from "../controls/keys";
-import {applyPatches, enablePatches} from "immer";
+import {applyPatches, enablePatches, Patch} from "immer";
 import {GameState, LoginMessage} from "../../../common/build/module";
+import PubSub from 'pubsub-js';
 
 enablePatches();
 
@@ -93,9 +94,14 @@ export class ConnectionHandler {
                                         }
                                     })
                                 }
+                                PubSub.publish("gameState");
                             }
                             if (message.options.patches) {
                                 this.state = applyPatches(this.state || {}, message.options.patches);
+                                message.options.patches.forEach((element:Patch) => {
+                                    const path = "gameState." + element.path.join(".");
+                                    PubSub.publish(path);
+                                });
                             }
                             this.stateIsDirty = true;
                             break;

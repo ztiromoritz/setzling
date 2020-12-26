@@ -2,12 +2,12 @@ import Phaser from "phaser";
 import SettingsConfig = Phaser.Types.Scenes.SettingsConfig;
 import { debugHelper } from "../debug";
 import { CustomGame } from "../types/customGame";
-import { Player } from "../../../common/build/module";
 import { createFloorLayer } from "../map/map";
 import { bindKeysToSounds } from "../sound/soundKey";
 import { Connection } from "../store/connectionHandler";
-import { MapObject, MapObjectId } from "setzling-common";
+import { MapObject, MapObjectId, Player } from "setzling-common";
 import TileMarker from "../ui-sprites/tileMarker";
+import { initializeUi } from "../ui/vue-app";
 
 
 export class MainScene extends Phaser.Scene {
@@ -34,6 +34,9 @@ export class MainScene extends Phaser.Scene {
     create(data: object) {
         console.log('Create MainScene');
         this.connection = data as Connection;
+
+        initializeUi(this.connection);
+
         const floorLayerData = this.connection.getGameState().map.layers[0];
         this.floorLayer = createFloorLayer(this, floorLayerData);
         this.floorLayer.setScale(1, 1);
@@ -47,8 +50,8 @@ export class MainScene extends Phaser.Scene {
 
         this.mapObjectsSet = new Set<MapObjectId>();
         this.mapObjects = this.add.group();
-        
-        
+
+
         bindKeysToSounds((this.game as CustomGame).toneResources);
     }
 
@@ -68,9 +71,9 @@ export class MainScene extends Phaser.Scene {
             if (!this.mapObjectsSet.has(mapObject.id)) {
                 const { x, y } = mapObject.position;
                 const objectSprite = this.add.sprite(x, y, 'objects', 0);
-                objectSprite.setOrigin(0,0);
+                objectSprite.setOrigin(0, 0);
                 const fireAnmation = objectSprite.anims.animationManager.get("fire");
-                
+
                 playAnimationIfNotPlaying(fireAnmation, objectSprite);
                 objectSprite.anims.animationManager.add
                 this.mapObjects.add(objectSprite);
@@ -99,7 +102,7 @@ export class MainScene extends Phaser.Scene {
             let animationSide;
             let animationDown = seedling.anims.animationManager.get("walk-down");
             let frameStand;
-            
+
 
             if (player.lastHorizontalDirection < 0) {
                 animationUp = seedling.anims.animationManager.get("walk-up-left");
@@ -112,7 +115,7 @@ export class MainScene extends Phaser.Scene {
             }
 
             if (player.controls.arrows.up) {
-                playAnimationIfNotPlaying(animationUp,seedling);
+                playAnimationIfNotPlaying(animationUp, seedling);
             } else if (player.controls.arrows.right || player.controls.arrows.left) {
                 playAnimationIfNotPlaying(animationSide, seedling);
             } else if (player.controls.arrows.down) {
@@ -123,7 +126,7 @@ export class MainScene extends Phaser.Scene {
             }
         }
 
-        gameState.players.forEach((player: Player) => {
+        gameState.players.forEach((player) => {
             const seedling = this.seedlings[color++];
             updateAnimation(seedling, player);
             seedling.x = player.position.x;
@@ -189,7 +192,7 @@ export class MainScene extends Phaser.Scene {
 
         this.anims.create({
             key: 'fire',
-            frames: this.anims.generateFrameNumbers('objects', {start: 0, end: 5}),
+            frames: this.anims.generateFrameNumbers('objects', { start: 0, end: 5 }),
             frameRate: 4,
             repeat: -1
         })

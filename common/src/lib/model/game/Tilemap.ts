@@ -1,5 +1,3 @@
-
-
 export interface Tilemap {
   objects : MapObject[]
   layers: MapLayer[],

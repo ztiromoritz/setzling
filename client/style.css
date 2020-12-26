@@ -108,3 +108,17 @@ canvas {
     color: lightpink;
     opacity: 1;
 }
+
+.inventory-wrapper {
+    position: absolute;
+    right: 30px;
+    top: 100px;
+}
+
+.inventory {
+    width: 200px;
+}
+
+.hide > .inventory {
+    display: none;
+}

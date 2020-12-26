@@ -1,19 +1,7 @@
 // @ts-ignore
 import html from './ui.html';
-import './inventory';
+import { defineComponent } from 'vue';
 
-window.customElements.whenDefined('setzling-ui').then(() => {
-    const setzlingUi = document.createElement('setzling-ui');
-    document.getElementById('ui')?.appendChild(setzlingUi);
+export const SetzlingUi = defineComponent({
+    template: html
 });
-
-customElements.define('setzling-ui', class extends HTMLElement {
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        this.innerHTML = html;   
-    }
-});
-
-

@@ -6,7 +6,7 @@ module.exports = {
     entry: {
         // Not in vendor bundle
         // "setzling-common": "file:../common/",
-        vendor: ['immer', 'lindenmayer', 'perlin.js', 'phaser', 'tone', 'lib-jitsi-meet']
+        vendor: ['immer', 'lindenmayer', 'perlin.js', 'phaser', 'tone', 'lib-jitsi-meet', 'vue/dist/vue.esm-bundler.js']
     },
     output: {
         filename: 'vendor.bundle.js',
@@ -17,6 +17,10 @@ module.exports = {
         new webpack.DllPlugin({
             name: 'vendor_lib',
             path: path.join(__dirname, 'build', 'vendor-manifest.json')
+        }),
+        new webpack.DefinePlugin({
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(true),
+            __VUE_OPTIONS_API__: JSON.stringify(true)
         })
     ]
 }

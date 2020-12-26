@@ -1,6 +1,6 @@
 import { Patch } from "immer";
-
-import {ClientId, Controls, GameId, GameState} from "./GameState";
+import {GameId, GameState} from "./GameState";
+import { ClientId, Controls } from "./Player";
 
 // Client Messages
 export type ClientMessageType =
