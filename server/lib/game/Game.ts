@@ -79,6 +79,7 @@ export class Game {
                             communicationRange: 50,
                             lastHorizontalDirection: 0,
                             items: {
+                                // TODO: load & store these infos from player account
                                 selected: 0,
                                 inventory: [
                                     {
@@ -124,6 +125,10 @@ export class Game {
                         const itemInstance = player.items.inventory[from.inventoryIndex];
                         if (itemInstance) {
                             const item = ItemRegistry.get(itemInstance.itemId);
+                            if (!item) {
+                                console.log("Cannot place - no item in inventory index "+from.inventoryIndex)
+                                break;
+                            }
                             if (item.placeable) {
                                 if (itemInstance.bluprint) {
                                     // Create newItem from blueprint   

@@ -8,7 +8,7 @@ export const ItemRegistry = (function () {
         register(id: ItemId, item: Item) {
             map.set(id,item);
         },
-        get(id: ItemId): Item {
+        get(id: ItemId): Item | null {
             return map.get(id);
         }
     }
