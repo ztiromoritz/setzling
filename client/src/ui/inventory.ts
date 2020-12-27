@@ -7,19 +7,22 @@ import { ensureConnection } from './composable/ensureConnection';
 import { Player } from 'setzling-common';
 import { Commands } from '../commands/commands';
 import { ensureCommands } from './composable/ensureCommands';
+import { ItemRegistry } from 'setzling-common';
 
 
 function computeItemList(player: Ref<Player | undefined>) {
     return computed(() => {
         let result = [];
         let selected = player.value?.items.selected;
+
         for (let i = 0; i < 10; i++) {
-            let item = player.value?.items.inventory[i];
+            let itemInstance = player.value?.items.inventory[i];
+            let item = ItemRegistry.get(itemInstance?.itemId || '')
             result.push({
                 key: `${i + 1}`.slice(-1), // '10' is '0',
                 marker: (selected === i) ? '*' : '\xa0',
-                label: item?.name || '',
-                clazz: (item?.bluprint) ? 'blueprint' : 'instance'
+                label: item?.displayName || '',
+                clazz: (itemInstance?.bluprint) ? 'blueprint' : 'instance'
             })
         }
         return result;
@@ -29,11 +32,11 @@ function computeItemList(player: Ref<Player | undefined>) {
 function initShowHide() {
     const hide = ref(false);
     document.addEventListener('keydown', (e) => {
-        if(e.key === 'i'){
+        if (e.key === 'i') {
             hide.value = !hide.value;
         }
     });
-    return hide;  
+    return hide;
 }
 
 
@@ -43,10 +46,10 @@ function initItemSelect() {
     const DIGIT_LENGTH = DIGIT.length;
     const commands: Commands = ensureCommands();
     document.addEventListener('keydown', (e) => {
-        
-        if(e.code.startsWith(DIGIT)){
+
+        if (e.code.startsWith(DIGIT)) {
             const digitValue = e.code.substr(DIGIT_LENGTH);
-            const index = (digitValue==='0')?9:parseInt(digitValue)-1;
+            const index = (digitValue === '0') ? 9 : parseInt(digitValue) - 1;
             console.log("index", index, digitValue);
             commands.selectInventoryItem(index);
         }

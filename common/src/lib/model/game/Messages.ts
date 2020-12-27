@@ -30,11 +30,17 @@ export type ControlUpdateMessage = {
 }
 
 export type PlaceElementMessage = {
-  type: 'PlaceElement',
+  type: 'PlaceElement';
   options: {
-    x: number,
-    y: number
-  }
+      position: {
+          x: number;
+          y: number;
+      }
+      from : {
+          clientId: ClientId,
+          inventoryIndex: number
+      }
+  };
 }
 
 export type SelectInventoryItemMessage = {

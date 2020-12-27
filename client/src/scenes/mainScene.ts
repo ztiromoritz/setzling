@@ -5,7 +5,7 @@ import { CustomGame } from "../types/customGame";
 import { createFloorLayer } from "../map/map";
 import { bindKeysToSounds } from "../sound/soundKey";
 import { Connection } from "../store/connectionHandler";
-import { MapObject, MapObjectId, Player } from "setzling-common";
+import { MapObjectId, Player, ItemInstanceId } from "setzling-common";
 import TileMarker from "../ui-sprites/tileMarker";
 import { initializeUi } from "../ui/vue-app";
 
@@ -17,7 +17,7 @@ export class MainScene extends Phaser.Scene {
     private floorLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
     private connection!: Connection;
     private mapObjects!: Phaser.GameObjects.Group;
-    private mapObjectsSet!: Set<MapObjectId>;
+    private mapObjectsSet!: Set<ItemInstanceId>;
     tileMarker!: TileMarker;
 
 
@@ -48,7 +48,7 @@ export class MainScene extends Phaser.Scene {
         this.tileMarker = new TileMarker(this, 0, 0);
         this.add.existing(this.tileMarker);
 
-        this.mapObjectsSet = new Set<MapObjectId>();
+        this.mapObjectsSet = new Set<ItemInstanceId>();
         this.mapObjects = this.add.group();
 
 
@@ -68,7 +68,7 @@ export class MainScene extends Phaser.Scene {
 
 
         gameState.map.objects.forEach((mapObject) => {
-            if (!this.mapObjectsSet.has(mapObject.id)) {
+            if (!this.mapObjectsSet.has(mapObject.id) && mapObject.position) {
                 const { x, y } = mapObject.position;
                 const objectSprite = this.add.sprite(x, y, 'objects', 0);
                 objectSprite.setOrigin(0, 0);

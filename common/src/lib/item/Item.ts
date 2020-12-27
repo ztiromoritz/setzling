@@ -1,5 +1,8 @@
+export type ItemId = string
+
 export interface Item {
-    id: string,
+
+    id: ItemId,
     displayName: string,
     description: string,
     
@@ -31,20 +34,15 @@ export interface Item {
     // ItemConsts.IN_HAND.CONSUMABLE
     //      Can be consumed. Disapers when used.
     inPlace: number
-
-    createInventoryBluprintSprite: () => Phaser.GameObjects.Sprite
-    
-    // TODO: Wording an GameState angleichen
-    //createInventorySprite: (instanceState: ItemInstanceState) => Phaser.GameObjects.Sprite
-    //createPlacedSprite: (instanceState: ItemInstanceState) => Phaser.GameObjects.Sprite
-
-
-    onPlace:()=>void
-    onPickup:()=>void
-    onUseInHand: ()=>void
-    onUseOnPlace: ()=>void
-
 }
+
+
+// TODO: add to server
+export interface ServerItem extends Item {
+    //tick(gameState: GameState)
+}
+
+
 
 export const ItemConsts = {
     IN_HAND: {

@@ -5,7 +5,7 @@ import {
     Player,
     ControlUpdateMessage,
     CommunicationRangeUpdateMessage,
-    LoginMessage, PlaceElementMessage, MapObject, ClientId, SelectInventoryItemMessage
+    LoginMessage, PlaceElementMessage, ClientId, SelectInventoryItemMessage, ItemRegistry, ItemInstance
 } from 'setzling-common';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +13,7 @@ import produce, { applyPatches } from "immer"
 
 // version 6
 import { enablePatches } from "immer"
+import { findSourceMap } from 'module';
 
 enablePatches()
 
@@ -81,21 +82,10 @@ export class Game {
                                 selected: 0,
                                 inventory: [
                                     {
+                                        id: 'asdfasdkhasdf',
                                         amount: 1,
                                         bluprint: true,
-                                        itemId: 'fire',
-                                        name: 'fire',
-                                        itemInstanceId: 'asdfasdkhasdf',
-                                        state: {
-                                            burning: false
-                                        }
-                                    },
-                                    {
-                                        amount: 1,
-                                        bluprint: true,
-                                        itemId: 'ice',
-                                        name: 'icecream',
-                                        itemInstanceId: 'jkfadskljdfsjkl',
+                                        itemId: 'item_fire',
                                         state: {
                                             burning: false
                                         }
@@ -129,19 +119,54 @@ export class Game {
                     break;
                 case 'PlaceElement':
                     message = userMessage.message as PlaceElementMessage;
-                    console.log("Placing fallback dummy element at " + message.options.x + "," + message.options.y)
-                    if (player) {
-                        const { x, y } = message.options;
-                        const id = uuidv4();
-                        const testObject: MapObject = { template: "TestTemplate", position: { x, y }, id };
-                        gameState.map.objects.push(testObject);
+                    const { position, from } = message.options;
+                    if (player && player.clientId == message.options.from.clientId) {
+                        const itemInstance = player.items.inventory[from.inventoryIndex];
+                        if (itemInstance) {
+                            const item = ItemRegistry.get(itemInstance.itemId);
+                            if (item.placeable) {
+                                if (itemInstance.bluprint) {
+                                    // Create newItem from blueprint   
+                                    const newItem: ItemInstance = {
+                                        id: uuidv4(),
+                                        amount: 1,
+                                        bluprint: false,
+                                        itemId: itemInstance.itemId,
+                                        state: JSON.parse(JSON.stringify(
+                                            itemInstance.state
+                                        )),
+                                        position: { ...position }
+                                    }
+                                    gameState.map.objects.push(newItem);
+                                } else {
+                                    if (item.stackable && itemInstance.amount > 1) {
+                                        // Create newItem by taking one from stack
+                                        itemInstance.amount--;
+                                        const newItem: ItemInstance = {
+                                            id: uuidv4(),
+                                            amount: 1,
+                                            bluprint: false,
+                                            itemId: itemInstance.itemId,
+                                            state: JSON.parse(JSON.stringify(
+                                                itemInstance.state
+                                            )),
+                                            position: { ...position }
+                                        }
+                                        gameState.map.objects.push(newItem);
+                                    } else {
+                                        // Move item from inventory to place
+                                        itemInstance.position = { ...position }
+                                        player.items.inventory[from.inventoryIndex] = undefined;
+                                        gameState.map.objects.push(itemInstance);
+                                    }
+                                }
+                            }
+                        }
                     }
-
                     break;
-
                 case 'SelectInventoryItem':
                     message = userMessage.message as SelectInventoryItemMessage;
-                    if(player && message.index >=0 && message.index <= 9){
+                    if (player && message.index >= 0 && message.index <= 9) {
                         player.items.selected = message.index;
                     }
                     break;

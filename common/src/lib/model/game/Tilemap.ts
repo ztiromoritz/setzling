@@ -1,5 +1,7 @@
+import { ItemInstance } from "./ItemInstance";
+
 export interface Tilemap {
-  objects : MapObject[]
+  objects : ItemInstance[]
   layers: MapLayer[],
 }
 
@@ -32,6 +34,7 @@ export interface Template {
     image: string;
 }
 
+/*
 export interface MapObject {
   id: MapObjectId,
   template: TemplateId,
@@ -40,3 +43,4 @@ export interface MapObject {
     x: number, y: number
   }
 }
+*/

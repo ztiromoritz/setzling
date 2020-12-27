@@ -1,5 +1,5 @@
 import { Point } from "./Geo";
-import { Item } from "./Item";
+import { ItemInstance } from "./ItemInstance";
 
 export type ClientId = string;
 
@@ -25,7 +25,7 @@ export interface Player {
     lastHorizontalDirection: HorizontalDirection,
     items: {
         selected: number
-        inventory: Item[]
-        bag: Item[]
+        inventory: (ItemInstance | undefined)[]
+        bag: ItemInstance[]
     }
 }
