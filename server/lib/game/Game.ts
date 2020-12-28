@@ -90,6 +90,13 @@ export class Game {
                                         state: {
                                             burning: false
                                         }
+                                    },
+                                    {
+                                        id: 'rdftugizbijoik',
+                                        amount: 1,
+                                        bluprint: true,
+                                        itemId: 'item_acorn',
+                                        state: {}
                                     }
                                 ],
                                 bag: []
@@ -125,6 +132,8 @@ export class Game {
                         const itemInstance = player.items.inventory[from.inventoryIndex];
                         if (itemInstance) {
                             const item = ItemRegistry.get(itemInstance.itemId);
+                            console.log(item)
+                            console.log(itemInstance)
                             if (!item) {
                                 console.log("Cannot place - no item in inventory index "+from.inventoryIndex)
                                 break;

@@ -20,6 +20,7 @@ export class PreloadScene extends Phaser.Scene {
         this.load.spritesheet('character', './assets/characterAnimationSpritesheet.png', {frameHeight: 16, frameWidth: 16} );
         this.load.spritesheet('ui-spritesheet', './assets/ui-spritesheet.png', {frameHeight: 16, frameWidth: 16} );
         this.load.spritesheet('objects', './assets/objects.png', {frameHeight: 16, frameWidth: 16} );
+        this.load.spritesheet('acorn', './assets/acorn.png', {frameHeight: 16, frameWidth: 16} );
         this.load.image('tileset', './assets/Tileset.png');
         console.log("PreloadScene#preload")
     }

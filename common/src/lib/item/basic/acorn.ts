@@ -1,12 +1,12 @@
 import { Item, ItemConsts } from "../Item";
 import { ItemRegistry } from "../Registry";
 
-export const ITEM_FIRE = 'item_fire';
+export const ITEM_ACORN = 'item_acorn';
 
 const item : Item = {
-    description: 'A small bonefire',
-    id: ITEM_FIRE,
-    displayName: 'fire',
+    description: 'A young acorn',
+    id: ITEM_ACORN,
+    displayName: 'acorn',
     inHand : ItemConsts.IN_HAND.NONE,
     inPlace : ItemConsts.IN_PLACE.USABLE,
     pickable: true,
@@ -14,5 +14,5 @@ const item : Item = {
     stackable: false
 }
 
-ItemRegistry.register(ITEM_FIRE, item);
+ItemRegistry.register(ITEM_ACORN, item);
 // must be imported in index.ts
