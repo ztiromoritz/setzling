@@ -13,6 +13,6 @@ export interface JitsiCommunication {
 export interface GameState {
     id: GameId;
     jitsiSessions: JitsiCommunication[],
-    players : Player[],
+    players : { [playerId:string]:Player },
     map : Tilemap
 }

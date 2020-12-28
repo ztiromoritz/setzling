@@ -1,7 +1,7 @@
 import { ItemInstance } from "./ItemInstance";
 
 export interface Tilemap {
-  objects : ItemInstance[]
+  objects : { [instanceId:string] : ItemInstance }
   layers: MapLayer[],
 }
 

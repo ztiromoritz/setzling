@@ -67,7 +67,7 @@ export class MainScene extends Phaser.Scene {
             }
         }
 
-        gameState.map.objects.forEach((mapObject) => {
+        Object.entries(gameState.map.objects).forEach(([id,mapObject])=>{
             if (!this.mapObjectsSet.has(mapObject.id) && mapObject.position) {
                 const item = ClientItemRegistry.get(mapObject.itemId);
                 if(item?.createPlacedSprite){
@@ -78,11 +78,12 @@ export class MainScene extends Phaser.Scene {
                     this.add.existing(sprite);
                 }   
             }
-        })
+        });
+       
 
 
 
-        const me = gameState.players.find((player) => player.clientId === localState.clientId);
+        const me = gameState.players[localState.clientId || ''];
         if (me) {
             this.cameras.main.scrollX = me.position.x - this.game.scale.width / 2;
             this.cameras.main.scrollY = me.position.y - this.game.scale.height / 2
@@ -124,8 +125,8 @@ export class MainScene extends Phaser.Scene {
                 seedling.setFrame(frameStand);
             }
         }
-
-        gameState.players.forEach((player) => {
+        Object.keys(gameState.players).forEach((clientId:string)=>{
+            const player = gameState.players[clientId];
             const seedling = this.seedlings[color++];
             updateAnimation(seedling, player);
             seedling.x = player.position.x;

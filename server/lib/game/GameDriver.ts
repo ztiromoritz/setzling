@@ -34,7 +34,7 @@ export class GameDriver {
         const map = MapGenerator.generateRandomMap(300, 300);
         return {
             id: this.game.id,
-            players: [],
+            players: {},
             jitsiSessions: [],
             map
         }

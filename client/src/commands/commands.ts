@@ -11,7 +11,7 @@ export class Commands {
     public placeElement(x: number, y: number): void {
         console.log("placeElement", x, y);
         const clientId = this.connection.getLocalState().clientId;
-        const player = this.connection.getGameState().players.find((player) => player.clientId === clientId);
+        const player = this.connection.getGameState().players[clientId||''];
         if (clientId && player) {
             const msg: PlaceElementMessage = {
                 type: 'PlaceElement',

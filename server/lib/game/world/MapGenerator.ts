@@ -72,7 +72,7 @@ export class MapGenerator {
         const floorLayer = createFloorLayer(width, height);
         return {
             layers: [floorLayer],
-            objects: []
+            objects: {}
         };
     }
 }

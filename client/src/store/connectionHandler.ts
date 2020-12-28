@@ -1,7 +1,7 @@
-import {initializeRangeSlider} from "../controls/rangeSlider";
-import {initializeServerKeys} from "../controls/keys";
-import {applyPatches, enablePatches, Patch} from "immer";
-import {GameState, LoginMessage} from "../../../common/build/module";
+import { initializeRangeSlider } from "../controls/rangeSlider";
+import { initializeServerKeys } from "../controls/keys";
+import { applyPatches, enablePatches, Patch } from "immer";
+import { GameState, LoginMessage } from "../../../common/build/module";
 import PubSub from 'pubsub-js';
 
 enablePatches();
@@ -12,7 +12,7 @@ export type LocalState = {
 }
 
 export interface Connection {
-    isStateDirty():boolean
+    isStateDirty(): boolean
     getLocalState(): LocalState
     getGameState(): GameState
     getWebSocket(): WebSocket
@@ -20,31 +20,31 @@ export interface Connection {
 
 export class ConnectionHandler {
     private state!: GameState;
-    private localState: LocalState ;
+    private localState: LocalState;
     private stateIsDirty: boolean;
-    private status =  {
-        'INITIAL' : false,
-        'WEBSOCKT_CREATED' : false,
-        'JOIN_REQUEST_SEND' : false,
-        'FIRST_MESSAGE_RECEIVED' : false,
+    private status = {
+        'INITIAL': false,
+        'WEBSOCKT_CREATED': false,
+        'JOIN_REQUEST_SEND': false,
+        'FIRST_MESSAGE_RECEIVED': false,
         'LOGGED_IN': false,
-        'GAME_STATE_INITIALIZED' : false
+        'GAME_STATE_INITIALIZED': false
     }
 
     constructor() {
         // State-update & message handling
         this.stateIsDirty = false;
-        this.localState = {clientId: undefined};
+        this.localState = { clientId: undefined };
     }
 
-    connect() : Promise<Connection>{
-        if(this.status.INITIAL){
+    connect(): Promise<Connection> {
+        if (this.status.INITIAL) {
             return Promise.reject('connect can only be called once');
         }
-        return new Promise<Connection>((resolve, reject)=>{
+        return new Promise<Connection>((resolve, reject) => {
             this.status.INITIAL = true;
             // timeout
-            setTimeout(()=>{
+            setTimeout(() => {
                 reject(`Was not able to create connection to server. No Update State was received. ${JSON.stringify(this.status)}`);
             }, 10 * 1000);
 
@@ -76,11 +76,11 @@ export class ConnectionHandler {
                             // console.log('UpdateState', message.options);
                             if (message.options.snapshot) {
                                 this.state = message.options.snapshot
-                                if(!this.status.GAME_STATE_INITIALIZED){
+                                if (!this.status.GAME_STATE_INITIALIZED) {
                                     this.status.GAME_STATE_INITIALIZED = true;
                                     const that = this;
                                     resolve({
-                                        isStateDirty():boolean{
+                                        isStateDirty(): boolean {
                                             return that.stateIsDirty;
                                         },
                                         getLocalState(): LocalState {
@@ -98,8 +98,8 @@ export class ConnectionHandler {
                             }
                             if (message.options.patches) {
                                 this.state = applyPatches(this.state || {}, message.options.patches);
-                                message.options.patches.forEach((element:Patch) => {
-                                    const path = "gameState." + element.path.join(".");
+                                message.options.patches.forEach((patch: Patch) => {
+                                    const path = "gameState." + patch.path.join(".");
                                     PubSub.publish(path);
                                 });
                             }

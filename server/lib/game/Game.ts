@@ -63,8 +63,7 @@ export class Game {
         let userMessage: UserMessage | undefined;
         while ((userMessage = this.messageQueue.shift()) !== undefined) {
             const clientId = userMessage?.clientId
-            const player = gameState.players
-                .find((player: Player) => player.clientId === clientId);
+            const player = gameState.players[clientId];
             let message;
             switch (userMessage.message.type) {
                 case 'JoinGame':
@@ -101,14 +100,13 @@ export class Game {
                                 bag: []
                             }
                         };
-                        gameState.players.push(newPlayer)
+                        gameState.players[clientId] = newPlayer;
                     }
                     break;
                 case 'LeaveGame':
                     console.log('LeaveGame')
                     if (player) {
-                        gameState.players = gameState.players
-                            .filter((player: Player) => player.clientId !== clientId)
+                        delete gameState.players[clientId]
                     }
                     break;
                 case 'ControlUpdate':
@@ -132,14 +130,15 @@ export class Game {
                         if (itemInstance) {
                             const item = ItemRegistry.get(itemInstance.itemId);
                             if (!item) {
-                                console.log("Cannot place - no item in inventory index "+from.inventoryIndex)
+                                console.log("Cannot place - no item in inventory index " + from.inventoryIndex)
                                 break;
                             }
                             if (item.placeable) {
                                 if (itemInstance.bluprint) {
                                     // Create newItem from blueprint   
+                                    const id = uuidv4();
                                     const newItem: ItemInstance = {
-                                        id: uuidv4(),
+                                        id,
                                         amount: 1,
                                         bluprint: false,
                                         itemId: itemInstance.itemId,
@@ -148,13 +147,14 @@ export class Game {
                                         )),
                                         position: { ...position }
                                     }
-                                    gameState.map.objects.push(newItem);
+                                    gameState.map.objects[id] = newItem;
                                 } else {
                                     if (item.stackable && itemInstance.amount > 1) {
                                         // Create newItem by taking one from stack
                                         itemInstance.amount--;
+                                        const id = uuidv4();
                                         const newItem: ItemInstance = {
-                                            id: uuidv4(),
+                                            id,
                                             amount: 1,
                                             bluprint: false,
                                             itemId: itemInstance.itemId,
@@ -163,12 +163,12 @@ export class Game {
                                             )),
                                             position: { ...position }
                                         }
-                                        gameState.map.objects.push(newItem);
+                                        gameState.map.objects[id] = newItem;
                                     } else {
                                         // Move item from inventory to place
                                         itemInstance.position = { ...position }
-                                        player.items.inventory[from.inventoryIndex] = undefined;
-                                        gameState.map.objects.push(itemInstance);
+                                        delete player.items.inventory[from.inventoryIndex];
+                                        gameState.map.objects[itemInstance.id] = itemInstance;
                                     }
                                 }
                             }
@@ -190,7 +190,8 @@ export class Game {
 
     private movement(gameState: GameState) {
         let speed = 1;
-        gameState.players.forEach((player) => {
+        Object.keys(gameState.players).forEach((clientId: string) => {
+            const player = gameState.players[clientId];
             let dx = 0;
             let dy = 0;
             const { up, down, left, right } = player.controls.arrows

@@ -19,6 +19,10 @@ class FireSprite extends Phaser.GameObjects.Sprite {
         const fireAnmation = animationManager.get("fire");
         this.anims.play(fireAnmation);
     }
+
+    update(){
+        
+    }
 }
 
 const item: ClientItemDescriptor = {
