@@ -8,6 +8,7 @@ import { Connection } from "../store/connectionHandler";
 import { MapObjectId, Player, ItemInstanceId } from "setzling-common";
 import TileMarker from "../ui-sprites/tileMarker";
 import { initializeUi } from "../ui/vue-app";
+import { ClientItemRegistry } from "../item/clientRegistry";
 
 
 export class MainScene extends Phaser.Scene {
@@ -66,18 +67,16 @@ export class MainScene extends Phaser.Scene {
             }
         }
 
-
         gameState.map.objects.forEach((mapObject) => {
             if (!this.mapObjectsSet.has(mapObject.id) && mapObject.position) {
-                const { x, y } = mapObject.position;
-                const objectSprite = this.add.sprite(x, y, 'objects', 0);
-                objectSprite.setOrigin(0, 0);
-                const fireAnmation = objectSprite.anims.animationManager.get("fire");
-
-                playAnimationIfNotPlaying(fireAnmation, objectSprite);
-                objectSprite.anims.animationManager.add
-                this.mapObjects.add(objectSprite);
-                this.mapObjectsSet.add(mapObject.id);
+                const item = ClientItemRegistry.get(mapObject.itemId);
+                if(item?.createPlacedSprite){
+                    
+                    const sprite = item?.createPlacedSprite(this, mapObject)  
+                    this.mapObjects.add(sprite);
+                    this.mapObjectsSet.add(mapObject.id);   
+                    this.add.existing(sprite);
+                }   
             }
         })
 
@@ -190,11 +189,6 @@ export class MainScene extends Phaser.Scene {
         });
 
 
-        this.anims.create({
-            key: 'fire',
-            frames: this.anims.generateFrameNumbers('objects', { start: 0, end: 5 }),
-            frameRate: 4,
-            repeat: -1
-        })
+       
     }
 }

@@ -130,6 +130,7 @@ export class Game {
                     const { position, from } = message.options;
                     if (player && player.clientId == message.options.from.clientId) {
                         const itemInstance = player.items.inventory[from.inventoryIndex];
+                        console.log(itemInstance);
                         if (itemInstance) {
                             const item = ItemRegistry.get(itemInstance.itemId);
                             console.log(item)

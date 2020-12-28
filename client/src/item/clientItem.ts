@@ -1,11 +1,12 @@
-import { Item, ItemInstanceState } from "setzling-common";
+import { Scene } from "phaser";
+import { Item, ItemInstance } from "setzling-common";
 
 export interface ClientItemDescriptor {
-    createInventoryBluprintSprite: (instanceState: ItemInstanceState) => Phaser.GameObjects.Sprite
+    createInventoryBluprintSprite?: (scene: Scene, instance: ItemInstance) => Phaser.GameObjects.Sprite
     
     // TODO: Wording an GameState angleichen
-    createInventorySprite: (instanceState: ItemInstanceState) => Phaser.GameObjects.Sprite
-    createPlacedSprite: (instanceState: ItemInstanceState) => Phaser.GameObjects.Sprite
+    createInventorySprite?: (scene: Scene, instance: ItemInstance) => Phaser.GameObjects.Sprite
+    createPlacedSprite?: (scene: Scene, instance: ItemInstance) => Phaser.GameObjects.Sprite
 
     onPlace?:()=>void
     onPickup?:()=>void
@@ -14,6 +15,6 @@ export interface ClientItemDescriptor {
 }
 
 export interface ClientItem extends ClientItemDescriptor, Item {
-    
+    // TODO default Implementations  
 }
 
