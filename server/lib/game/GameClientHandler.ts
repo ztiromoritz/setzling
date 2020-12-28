@@ -36,7 +36,6 @@ export class GameClientHandler implements GameClientNotifier {
     constructor(server: Server, gameStore: GameStore) {
         this.clients = [];
         server.on('connection', (socket: WebSocket) => {
-            console.log("connection");
             let client: GameClient = {
                 socket,
                 id: uuidv4(),
@@ -45,7 +44,6 @@ export class GameClientHandler implements GameClientNotifier {
                 gameId: null
             }
             this.clients.push(client);
-            console.log(this.clients.length)
             const messageHandler = this.createClientMessageHandler(client, gameStore);
 
             socket.on('message', (msg) => {
@@ -57,10 +55,8 @@ export class GameClientHandler implements GameClientNotifier {
             });
 
             socket.on('close', () => {
-                console.log("close",  this.clients.length);
                 const gameId = client.gameId;
                 if(gameId){
-                    console.log("LeaveOnClose")
                     const gameDriver = gameStore.getGameDriver(gameId);
                     const msg = {
 
@@ -73,7 +69,6 @@ export class GameClientHandler implements GameClientNotifier {
                     }, client.id)
                 }
                 this.clients = this.clients.filter(NOT_EQUAL(client));
-                console.log("close filter",  this.clients.length);
             });
         });
     }

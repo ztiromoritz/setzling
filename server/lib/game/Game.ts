@@ -62,7 +62,6 @@ export class Game {
 
         let userMessage: UserMessage | undefined;
         while ((userMessage = this.messageQueue.shift()) !== undefined) {
-            console.log("userMessage", JSON.stringify(userMessage, null, 2))
             const clientId = userMessage?.clientId
             const player = gameState.players
                 .find((player: Player) => player.clientId === clientId);
@@ -130,11 +129,8 @@ export class Game {
                     const { position, from } = message.options;
                     if (player && player.clientId == message.options.from.clientId) {
                         const itemInstance = player.items.inventory[from.inventoryIndex];
-                        console.log(itemInstance);
                         if (itemInstance) {
                             const item = ItemRegistry.get(itemInstance.itemId);
-                            console.log(item)
-                            console.log(itemInstance)
                             if (!item) {
                                 console.log("Cannot place - no item in inventory index "+from.inventoryIndex)
                                 break;
@@ -219,7 +215,6 @@ export class Game {
 
 
     public sendUserMessage(message: any, clientId: ClientId) {
-        console.log("message xxx", message);
         this.messageQueue.push({ message, clientId })
     }
 
