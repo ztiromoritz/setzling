@@ -3,14 +3,14 @@ import html from './instrument.html';
 import { defineComponent, ref } from "vue";
 
 
-const ROWS = 5;
-const COLS = 16;
+const ROWS = 12;
+const COLS = 64;
 
-const ON = 'x';
-const OFF = '-';
+const ON = '▣';
+const OFF = '□';
 function connectToJam() {
 
-    const pattern = Array(ROWS).fill([]).map(() => Array(COLS).fill('-'));
+    const pattern = Array(ROWS).fill([]).map(() => Array(COLS).fill(OFF));
 
     const jamState = ref({
         tempo: 120,
@@ -83,7 +83,7 @@ function createSequenzer(){
 
     setInterval(()=>{
         currentColumn.value = mod(currentColumn.value+1, COLS);
-    },1000);
+    },500);
 
     return {
         stepPlayingClass(col:number){

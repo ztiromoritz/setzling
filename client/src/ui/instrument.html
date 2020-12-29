@@ -4,11 +4,11 @@
         <fieldset class="tui-fieldset tui-bg-purple-black tui-border-solid">
             <legend>Instrument</legend>
             <div class="instrument-sequenzer">
-                <div v-for="(row, rowIndex) in jamState.instruments.clientId.pattern" class="row">
+                <div v-for="(row, rowIndex) in jamState.instruments.clientId.pattern" class="instrument-row">
                     <div v-for="(cell, colIndex) in row" class="instrument-cell" v-on:click="toggle(rowIndex,colIndex)" :class="
                     {noteCursor:cursorClass(rowIndex, colIndex), noteEnabled:noteEnabledClass(rowIndex, colIndex),
                     stepPlaying:stepPlayingClass(colIndex)}">
-                        {{cell}}
+                        
                     </div>
                 </div>
             </div>

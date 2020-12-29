@@ -139,14 +139,29 @@ canvas {
     padding: 0; 
 }
 
-.instrument .noteCursor{
-    border: 1px solid red;
+.instrument .instrument-cell{
+    border: 2px solid rgba(0,0,0,0.0);
+    width: 10px;
+    height: 10px;
+    background: rgb(224, 250, 132);
 }
 
-.instrument .noteEnabled {
-    color: red;
+.instrument .instrument-cell:nth-child(4n+1){
+    background: rgb(99, 217, 221);
 }
 
-.instrument .stepPlaying {
+.instrument .instrument-cell.noteCursor{
+    border-color:rgb(255, 5, 5);
+}
+
+.instrument .instrument-cell.noteEnabled {
+    background: burlywood;
+}
+
+.instrument .instrument-cell.stepPlaying {
     background: blue;
+}
+
+.instrument .instrument-cell.stepPlaying.noteEnabled {
+    background: rgb(64, 162, 228);
 }
