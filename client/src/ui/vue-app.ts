@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { Commands } from '../commands/commands';
 import { Connection } from '../store/connectionHandler';
 import { CustomGame } from '../types/customGame';
+import { SetzlingInstrument } from './instrument';
 import { SetzlingInventory } from './inventory';
 import { SetzlingUi } from './ui';
 
@@ -17,6 +18,7 @@ export function initializeUi({ connection, commands}: UiConfig) {
     const app = createApp(VueApp);
     app.component('setzling-ui', SetzlingUi);
     app.component('setzling-inventory', SetzlingInventory);
+    app.component('setzling-instrument', SetzlingInstrument);
     app.provide('connection', connection);
     app.provide('commands', commands);
     app.mount('#ui');

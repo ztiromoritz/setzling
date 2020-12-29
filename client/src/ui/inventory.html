@@ -2,9 +2,9 @@
     <div class="tui-window tui-bg-purple-black inventory">
         <fieldset class="tui-fieldset tui-bg-purple-black tui-border-solid">
             <legend>Inventory</legend>
-            <ul >
-                <li v-for="item in itemList" :class="item.class"> 
-                    <span class="key green-255-text">{{item.key}}</span>: 
+            <ul>
+                <li v-for="item in itemList" :class="item.class">
+                    <span class="key green-255-text">{{item.key}}</span>:
                     {{item.marker}} {{item.label}}
                 </li>
             </ul>

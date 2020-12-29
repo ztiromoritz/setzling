@@ -122,3 +122,31 @@ canvas {
 .hide > .inventory {
     display: none;
 }
+
+.instrument {
+    position: absolute;
+    left: 30px;
+    top: 100px; 
+   
+}
+.instrument .instrument-cell {
+    float:left;
+}
+
+
+.instrument * {
+    margin: 0;
+    padding: 0; 
+}
+
+.instrument .noteCursor{
+    border: 1px solid red;
+}
+
+.instrument .noteEnabled {
+    color: red;
+}
+
+.instrument .stepPlaying {
+    background: blue;
+}
