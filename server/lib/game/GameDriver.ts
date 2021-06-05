@@ -61,7 +61,7 @@ export class GameDriver {
                 history.patches.push(...patches);
             }
             this.clientNotifier?.notifyClients(this.game.id, history);
-            this.state = newState;
+            this.state = newState as GameState;
             frame++;
         }, 1000 / FRAMES_PER_SECOND)
     }

@@ -33,7 +33,7 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "immer": "^7.0.14",
+    "immer": "^9.0.2",
     "lib-jitsi-meet": "^1.0.6",
     "lindenmayer": "^1.5.4",
     "perlin.js": "^1.0.0",
